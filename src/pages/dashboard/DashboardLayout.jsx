@@ -1,9 +1,10 @@
 import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Image as ImageIcon, QrCode, Settings, LogOut, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, QrCode, Settings, LogOut, Sparkles, MessageSquare } from 'lucide-react';
 import Overview from './Overview';
 import ContentStudio from './ContentStudio';
 import QRManagement from './QRManagement';
 import ShopSettings from './ShopSettings';
+import Responses from './Responses';
 import { useAuth } from '../../context/AuthContext';
 
 const DashboardLayout = () => {
@@ -18,6 +19,7 @@ const DashboardLayout = () => {
   const navItems = [
     { name: 'Overview', path: '/dashboard', icon: <LayoutDashboard size={20} />, exact: true },
     { name: 'Content Studio', path: '/dashboard/content', icon: <ImageIcon size={20} /> },
+    { name: 'Responses', path: '/dashboard/responses', icon: <MessageSquare size={20} /> },
     { name: 'QR Management', path: '/dashboard/qr', icon: <QrCode size={20} /> },
     { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={20} /> },
   ];
@@ -102,6 +104,7 @@ const DashboardLayout = () => {
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/content" element={<ContentStudio />} />
+            <Route path="/responses" element={<Responses />} />
             <Route path="/qr" element={<QRManagement />} />
             <Route path="/settings" element={<ShopSettings />} />
           </Routes>

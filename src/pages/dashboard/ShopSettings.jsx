@@ -25,6 +25,7 @@ const ShopSettings = () => {
     address: '',
     googleMapsUrl: '',
     placeId: '',
+    persona: '',
   });
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -38,6 +39,7 @@ const ShopSettings = () => {
         address: shop.address ?? '',
         googleMapsUrl: shop.google_maps_url ?? '',
         placeId: shop.place_id ?? '',
+        persona: shop.persona ?? '',
       });
     }
   }, [shop]);
@@ -59,6 +61,7 @@ const ShopSettings = () => {
         address: formData.address,
         google_maps_url: formData.googleMapsUrl,
         place_id: formData.placeId,
+        persona: formData.persona,
       },
       { onConflict: 'user_id' }
     );
@@ -110,6 +113,24 @@ const ShopSettings = () => {
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '8px' }}>Google Place ID (For syncing reviews to Content Studio)</label>
                 <input name="placeId" value={formData.placeId} onChange={handleChange} style={inputStyle} />
               </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '24px', borderBottom: '1px solid var(--glass-border)', paddingBottom: '16px' }}>AI Response Persona</h3>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '8px' }}>Business Voice</label>
+              <textarea
+                name="persona"
+                value={formData.persona}
+                onChange={handleChange}
+                rows={4}
+                placeholder="e.g. Warm, family-owned coffee shop in the city centre. Casual and friendly tone, we know our regulars by name."
+                style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
+              />
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                Describe your business personality. The AI uses this to write replies that sound like you.
+              </p>
             </div>
           </div>
 

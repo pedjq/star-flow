@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Star, ShieldAlert } from 'lucide-react';
+import { Star, ShieldAlert, Sparkles } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import { useShop } from '../../hooks/useShop';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -45,7 +45,7 @@ const MetricCard = ({ title, value, icon, trend }) => (
 
 const Overview = () => {
   const { shop, loading: shopLoading } = useShop();
-  const [metrics, setMetrics] = useState({ totalScans: 0, reviewsGained: 0, negativeFeedback: 0 });
+  const [metrics, setMetrics] = useState({ totalScans: 0, reviewsGained: 0, negativeFeedback: 0, aiReplies: 0 });
   const [chartData, setChartData] = useState([]);
   const [recentFeedback, setRecentFeedback] = useState([]);
   const [metricsLoading, setMetricsLoading] = useState(true);
@@ -63,12 +63,13 @@ const Overview = () => {
         return acc;
       }, {});
 
-      const [totalRes, positiveRes, negativeRes, recentRes, feedbackRes] = await Promise.all([
+      const [totalRes, positiveRes, negativeRes, recentRes, feedbackRes, aiRepliesRes] = await Promise.all([
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id),
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id).gte('rating', 4),
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id).lte('rating', 3),
         supabase.from('feedback').select('id, rating, message, customer_name, created_at').eq('shop_id', shop.id).lte('rating', 3).order('created_at', { ascending: false }).limit(5),
-        supabase.from('feedback').select('rating, created_at').eq('shop_id', shop.id).gte('created_at', dates[0].toISOString())
+        supabase.from('feedback').select('rating, created_at').eq('shop_id', shop.id).gte('created_at', dates[0].toISOString()),
+        supabase.from('review_responses').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id),
       ]);
       
       if (feedbackRes.data) {
@@ -85,6 +86,7 @@ const Overview = () => {
         totalScans: totalRes.count ?? 0,
         reviewsGained: positiveRes.count ?? 0,
         negativeFeedback: negativeRes.count ?? 0,
+        aiReplies: aiRepliesRes.count ?? 0,
       });
       setChartData(Object.values(chartMap));
       setRecentFeedback(recentRes.data ?? []);
@@ -126,6 +128,11 @@ const Overview = () => {
           value={loading ? '—' : metrics.negativeFeedback}
           icon={<ShieldAlert size={20} color="#ff2d55" />}
           trend={-1.8}
+        />
+        <MetricCard
+          title="AI Replies Drafted"
+          value={loading ? '—' : metrics.aiReplies}
+          icon={<Sparkles size={20} color="#f4a017" />}
         />
       </div>
 
