@@ -273,6 +273,20 @@ const ScanExperience = () => {
                 >
                   <Send size={18} /> {submitting ? 'Submitting...' : 'Submit Feedback'}
                 </button>
+
+                {(shop?.google_maps_url || shop?.place_id) && (
+                  <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.35)' }}>
+                    You can also{' '}
+                    <a
+                      href={shop.place_id ? `https://search.google.com/local/writereview?placeid=${shop.place_id}` : shop.google_maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}
+                    >
+                      leave a review on Google
+                    </a>
+                  </p>
+                )}
               </motion.form>
             )}
 
