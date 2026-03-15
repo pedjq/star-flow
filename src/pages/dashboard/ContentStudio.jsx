@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { Download, RefreshCw, ImageIcon as LucideImageIcon } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Download, RefreshCw, ImageIcon as LucideImageIcon, Upload, Check } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { supabase } from '../../lib/supabaseClient';
 import { useShop } from '../../hooks/useShop';
@@ -22,7 +22,51 @@ const ContentStudio = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncError, setSyncError] = useState('');
+
+  const [uploadedPhotos, setUploadedPhotos] = useState([]);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const templateRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  // Load existing photos when shop is ready
+  useEffect(() => {
+    if (shop?.id) fetchPhotos();
+  }, [shop?.id]);
+
+  const fetchPhotos = async () => {
+    const { data } = await supabase.storage
+      .from('shop-photos')
+      .list(shop.id, { sortBy: { column: 'created_at', order: 'desc' } });
+
+    if (data && data.length > 0) {
+      const photos = data
+        .filter(f => f.name !== '.emptyFolderPlaceholder')
+        .map(file => {
+          const { data: { publicUrl } } = supabase.storage
+            .from('shop-photos')
+            .getPublicUrl(`${shop.id}/${file.name}`);
+          return { name: file.name, url: publicUrl };
+        });
+      setUploadedPhotos(photos);
+      if (photos.length > 0 && !selectedPhoto) setSelectedPhoto(photos[0].url);
+    }
+  };
+
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !shop?.id) return;
+    setIsUploading(true);
+    const ext = file.name.split('.').pop();
+    const filename = `${Date.now()}.${ext}`;
+    const { error } = await supabase.storage
+      .from('shop-photos')
+      .upload(`${shop.id}/${filename}`, file);
+    if (!error) await fetchPhotos();
+    setIsUploading(false);
+    e.target.value = '';
+  };
 
   const fetchGoogleReviews = async () => {
     if (!shop?.place_id) return;
@@ -66,25 +110,24 @@ const ContentStudio = () => {
     </div>
   );
 
-  const renderAvatar = (size, border = null) => {
-    const style = {
-      width: size, height: size, borderRadius: '50%', objectFit: 'cover', display: 'block',
-      ...(border ? { border } : {}),
-    };
-    if (selectedReview?.photo) {
-      return <img src={selectedReview.photo} crossOrigin="anonymous" alt={selectedReview.author} style={style} />;
-    }
-    return (
-      <div style={{
-        ...style,
-        background: 'linear-gradient(135deg, #9b2df2, #2b58ff)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: '#fff', fontSize: size * 0.38, fontWeight: 700, flexShrink: 0,
-      }}>
-        {selectedReview?.author?.charAt(0) ?? '?'}
-      </div>
-    );
-  };
+  // Photo element for templates — uses selected business photo or gradient fallback
+  const PhotoArea = ({ width, height, style = {}, gradientColors = ['#555', '#333'] }) => (
+    <div style={{ width, height, position: 'relative', overflow: 'hidden', ...style }}>
+      {selectedPhoto ? (
+        <img
+          src={selectedPhoto}
+          crossOrigin="anonymous"
+          alt=""
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        />
+      ) : (
+        <div style={{
+          width: '100%', height: '100%',
+          background: `linear-gradient(145deg, ${gradientColors[0]}, ${gradientColors[1]})`,
+        }} />
+      )}
+    </div>
+  );
 
   const renderTemplate = () => {
     if (!selectedReview) return null;
@@ -117,13 +160,6 @@ const ContentStudio = () => {
               <rect width="100%" height="100%" fill="url(#scallop)"/>
             </svg>
 
-            {/* Radial light */}
-            <div style={{
-              position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-              width: '800px', height: '400px',
-              background: 'radial-gradient(ellipse at top, rgba(255,255,255,0.1) 0%, transparent 70%)',
-            }} />
-
             {/* Business name */}
             <div style={{
               color: 'rgba(255,255,255,0.92)', fontSize: '30px', fontWeight: 400,
@@ -133,30 +169,23 @@ const ContentStudio = () => {
               {businessName}
             </div>
 
-            {/* Avatar + info */}
-            <div style={{ marginTop: '80px', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
-              <div style={{ borderRadius: '50%', border: '5px solid rgba(255,255,255,0.3)', overflow: 'hidden', width: '180px', height: '180px' }}>
-                {renderAvatar(180)}
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ color: '#fff', fontSize: '36px', fontWeight: 700, letterSpacing: '0.05em' }}>{selectedReview.author}</div>
-                <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '22px', marginTop: '6px' }}>Google Review</div>
-              </div>
-              <Stars size={44} color="#f4a017" />
+            {/* Business photo */}
+            <div style={{ width: '880px', height: '420px', borderRadius: '24px', overflow: 'hidden', marginTop: '48px', zIndex: 10 }}>
+              <PhotoArea width="880px" height="420px" gradientColors={['#c0392b', '#641e16']} />
             </div>
 
             {/* Review card */}
             <div style={{
               zIndex: 10, width: '880px',
               background: '#fff', borderRadius: '28px',
-              padding: '48px 60px', marginTop: '48px', textAlign: 'center',
+              padding: '40px 60px', marginTop: '32px', textAlign: 'center',
             }}>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '16px' }}>
                 {[1,2,3,4,5].map(i => <span key={i} style={{ color: '#f4a017', fontSize: '36px', lineHeight: 1 }}>★</span>)}
               </div>
-              <div style={{ borderTop: '2px dotted #f0c0a0', marginBottom: '28px' }} />
-              <p style={{ fontSize: '32px', color: '#333', lineHeight: 1.55, fontStyle: 'italic', margin: 0, marginBottom: '28px' }}>
-                "{truncate(selectedReview.text, 220)}"
+              <div style={{ borderTop: '2px dotted #f0c0a0', marginBottom: '24px' }} />
+              <p style={{ fontSize: '30px', color: '#333', lineHeight: 1.55, fontStyle: 'italic', margin: 0, marginBottom: '24px' }}>
+                "{truncate(selectedReview.text, 200)}"
               </p>
               <div style={{ fontSize: '26px', fontWeight: 700, color: '#222' }}>{selectedReview.author}</div>
             </div>
@@ -200,22 +229,7 @@ const ContentStudio = () => {
               boxShadow: '0 40px 80px rgba(0,0,0,0.3)',
             }}>
               {/* Photo header */}
-              <div style={{
-                width: '100%', height: '360px',
-                background: 'linear-gradient(145deg, #d4a053, #7a4e10)',
-                position: 'relative', overflow: 'hidden',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                {selectedReview.photo && (
-                  <img src={selectedReview.photo} crossOrigin="anonymous" alt="" style={{
-                    position: 'absolute', inset: 0, width: '100%', height: '100%',
-                    objectFit: 'cover', filter: 'blur(12px)', transform: 'scale(1.15)', opacity: 0.55,
-                  }} />
-                )}
-                <div style={{ position: 'relative', zIndex: 2, borderRadius: '50%', border: '5px solid rgba(255,255,255,0.95)', overflow: 'hidden', width: '130px', height: '130px' }}>
-                  {renderAvatar(130)}
-                </div>
-              </div>
+              <PhotoArea width="100%" height="360px" gradientColors={['#d4a053', '#7a4e10']} />
 
               {/* Content */}
               <div style={{ padding: '44px 64px 56px', position: 'relative' }}>
@@ -276,21 +290,16 @@ const ContentStudio = () => {
             <div style={{
               color: '#fff', fontSize: '84px', fontWeight: 900,
               textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.05,
-              letterSpacing: '-0.02em', marginBottom: '56px', zIndex: 10,
+              letterSpacing: '-0.02em', marginBottom: '48px', zIndex: 10,
             }}>
               Customer<br/>Reviews
             </div>
 
-            {/* Reviewer row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '32px', marginBottom: '48px', zIndex: 10 }}>
-              <div style={{ borderRadius: '50%', border: '4px solid #f4c430', overflow: 'hidden', width: '140px', height: '140px', flexShrink: 0 }}>
-                {renderAvatar(140)}
-              </div>
-              <div>
-                <Stars size={36} color="#f4c430" />
-                <div style={{ color: '#fff', fontSize: '32px', fontWeight: 700, marginTop: '10px' }}>{selectedReview.author}</div>
-                <div style={{ color: '#f4c430', fontSize: '22px', fontStyle: 'italic' }}>Google Review</div>
-              </div>
+            {/* Stars + author row */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', marginBottom: '48px', zIndex: 10 }}>
+              <Stars size={40} color="#f4c430" />
+              <div style={{ color: '#fff', fontSize: '32px', fontWeight: 700 }}>{selectedReview.author}</div>
+              <div style={{ color: '#f4c430', fontSize: '22px', fontStyle: 'italic' }}>Google Review</div>
             </div>
 
             {/* Review card */}
@@ -317,30 +326,8 @@ const ContentStudio = () => {
             fontFamily: 'Arial, Helvetica, sans-serif',
           }}>
             {/* Left photo panel */}
-            <div style={{
-              position: 'absolute', top: '60px', left: '60px',
-              width: '580px', height: '700px', borderRadius: '24px',
-              overflow: 'hidden',
-              background: 'linear-gradient(145deg, #2d5016, #1a3a0f)',
-            }}>
-              {selectedReview.photo && (
-                <img src={selectedReview.photo} crossOrigin="anonymous" alt="" style={{
-                  width: '100%', height: '100%', objectFit: 'cover',
-                  filter: 'blur(20px)', transform: 'scale(1.2)', opacity: 0.45,
-                }} />
-              )}
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'linear-gradient(145deg, rgba(45,80,22,0.7), rgba(20,50,10,0.85))',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <svg width="180" height="180" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.35 }}>
-                  <path d="M50 10 C80 10, 95 30, 90 60 C85 85, 65 95, 50 90 C35 95, 15 85, 10 60 C5 30, 20 10, 50 10Z" fill="#5be78b"/>
-                  <path d="M50 10 L50 90" stroke="#3a9a5c" strokeWidth="2"/>
-                  <path d="M50 30 C60 35, 70 35, 75 45" stroke="#3a9a5c" strokeWidth="1.5"/>
-                  <path d="M50 50 C40 55, 30 55, 25 65" stroke="#3a9a5c" strokeWidth="1.5"/>
-                </svg>
-              </div>
+            <div style={{ position: 'absolute', top: '60px', left: '60px', width: '580px', height: '700px', borderRadius: '24px', overflow: 'hidden' }}>
+              <PhotoArea width="580px" height="700px" gradientColors={['#2d5016', '#1a3a0f']} />
             </div>
 
             {/* Business name top right */}
@@ -368,9 +355,6 @@ const ContentStudio = () => {
               background: '#fff', borderRadius: '32px', padding: '48px',
               boxShadow: '0 40px 80px rgba(0,0,0,0.45)', zIndex: 10,
             }}>
-              <div style={{ borderRadius: '50%', overflow: 'hidden', width: '90px', height: '90px', border: '3px solid #f4a017', marginBottom: '20px' }}>
-                {renderAvatar(90)}
-              </div>
               <Stars size={30} color="#f4a017" />
               <p style={{ fontSize: '26px', color: '#333', lineHeight: 1.65, margin: '20px 0 28px', fontStyle: 'italic' }}>
                 "{truncate(selectedReview.text, 200)}"
@@ -432,21 +416,8 @@ const ContentStudio = () => {
               position: 'relative', zIndex: 20,
             }}>
               {/* Photo area */}
-              <div style={{
-                width: '100%', height: '380px',
-                background: 'linear-gradient(135deg, #8b5a2b, #5c3416)',
-                marginBottom: '28px', overflow: 'hidden', position: 'relative',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                {selectedReview.photo && (
-                  <img src={selectedReview.photo} crossOrigin="anonymous" alt="" style={{
-                    position: 'absolute', inset: 0, width: '100%', height: '100%',
-                    objectFit: 'cover', filter: 'blur(16px)', transform: 'scale(1.2)', opacity: 0.55,
-                  }} />
-                )}
-                <div style={{ position: 'relative', zIndex: 2, borderRadius: '50%', border: '4px solid rgba(255,255,255,0.95)', overflow: 'hidden', width: '130px', height: '130px' }}>
-                  {renderAvatar(130)}
-                </div>
+              <div style={{ width: '100%', height: '380px', marginBottom: '28px', overflow: 'hidden' }}>
+                <PhotoArea width="100%" height="380px" gradientColors={['#8b5a2b', '#5c3416']} />
               </div>
 
               {/* Stars + label */}
@@ -459,12 +430,10 @@ const ContentStudio = () => {
                 </div>
               </div>
 
-              {/* Review text */}
               <p style={{ fontSize: '24px', color: '#555', lineHeight: 1.65, textAlign: 'center', margin: '0 0 24px' }}>
                 {truncate(selectedReview.text, 200)}
               </p>
 
-              {/* Author + heart */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ fontSize: '22px', color: '#888' }}>— {selectedReview.author}</div>
                 <div style={{
@@ -526,6 +495,8 @@ const ContentStudio = () => {
 
         {/* Left: Controls */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+          {/* Reviews */}
           <div className="stakent-card">
             <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '16px' }}>Select 5-Star Review</h3>
             {reviews.length === 0 ? (
@@ -533,7 +504,7 @@ const ContentStudio = () => {
                 Click "Sync Reviews" to load your Google reviews.
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '240px', overflowY: 'auto' }}>
                 {reviews.map(review => (
                   <div
                     key={review.id}
@@ -557,6 +528,62 @@ const ContentStudio = () => {
             )}
           </div>
 
+          {/* Business Photos */}
+          <div className="stakent-card">
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '16px' }}>Business Photos</h3>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: 1.5 }}>
+              Upload your food or business photos. Select one to use in the template.
+            </p>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleUpload}
+              style={{ display: 'none' }}
+            />
+            <button
+              onClick={() => fileInputRef.current.click()}
+              disabled={isUploading}
+              className="stakent-btn"
+              style={{ width: '100%', opacity: isUploading ? 0.6 : 1, marginBottom: uploadedPhotos.length > 0 ? '16px' : 0 }}
+            >
+              <Upload size={15} />
+              {isUploading ? 'Uploading...' : 'Upload Photo'}
+            </button>
+
+            {uploadedPhotos.length > 0 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+                {uploadedPhotos.map(photo => (
+                  <div
+                    key={photo.name}
+                    onClick={() => setSelectedPhoto(photo.url)}
+                    style={{
+                      aspectRatio: '1', cursor: 'pointer', borderRadius: '8px',
+                      overflow: 'hidden', position: 'relative',
+                      border: `2px solid ${selectedPhoto === photo.url ? '#fff' : 'transparent'}`,
+                      transition: 'border-color 0.15s',
+                    }}
+                  >
+                    <img src={photo.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    {selectedPhoto === photo.url && (
+                      <div style={{
+                        position: 'absolute', inset: 0,
+                        background: 'rgba(255,255,255,0.15)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        <div style={{ background: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Check size={14} color="#000" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Templates */}
           <div className="stakent-card">
             <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '16px' }}>Select Template</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
