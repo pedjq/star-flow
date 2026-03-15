@@ -18,7 +18,7 @@ const ScanExperience = () => {
     const fetchShop = async () => {
       const { data, error } = await supabase
         .from('shops')
-        .select('id, name, google_maps_url')
+        .select('id, name, google_maps_url, place_id')
         .eq('id', shopId)
         .single();
 
@@ -159,7 +159,7 @@ const ScanExperience = () => {
                 </p>
                 {shop?.google_maps_url ? (
                   <a
-                    href={shop.google_maps_url}
+                    href={shop.place_id ? `https://search.google.com/local/writereview?placeid=${shop.place_id}` : shop.google_maps_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-primary"
