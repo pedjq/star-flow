@@ -12,6 +12,7 @@ const Responses = () => {
   const [editMap, setEditMap] = useState({});          // { reviewId: string } edited text
   const [generatingId, setGeneratingId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
+  const [generateError, setGenerateError] = useState('');
 
   // Load previously saved responses from DB
   useEffect(() => {
@@ -49,29 +50,37 @@ const Responses = () => {
 
   const generateReply = async (review) => {
     setGeneratingId(review.id);
-    const { data, error } = await supabase.functions.invoke('generate-review-response', {
-      body: {
-        review_text: review.text,
-        review_author: review.author,
-        shop_name: shop.name,
-        persona: shop.persona || '',
-      },
-    });
-
-    if (!error && data?.response) {
-      setResponseMap(prev => ({ ...prev, [review.author]: data.response }));
-      setEditMap(prev => ({ ...prev, [review.author]: data.response }));
-
-      // Save to DB
-      await supabase.from('review_responses').upsert(
-        {
-          shop_id: shop.id,
-          review_author: review.author,
+    setGenerateError('');
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-review-response', {
+        body: {
           review_text: review.text,
-          ai_response: data.response,
+          review_author: review.author,
+          shop_name: shop.name,
+          persona: shop.persona || '',
         },
-        { onConflict: 'shop_id,review_author' }
-      );
+      });
+
+      if (error || data?.error) {
+        setGenerateError(error?.message ?? data?.error ?? 'Failed to generate reply.');
+      } else if (data?.response) {
+        setResponseMap(prev => ({ ...prev, [review.author]: data.response }));
+        setEditMap(prev => ({ ...prev, [review.author]: data.response }));
+
+        await supabase.from('review_responses').upsert(
+          {
+            shop_id: shop.id,
+            review_author: review.author,
+            review_text: review.text,
+            ai_response: data.response,
+          },
+          { onConflict: 'shop_id,review_author' }
+        );
+      } else {
+        setGenerateError('No response received. Data: ' + JSON.stringify(data));
+      }
+    } catch (e) {
+      setGenerateError('Exception: ' + e.message);
     }
     setGeneratingId(null);
   };
@@ -121,6 +130,16 @@ const Responses = () => {
           borderRadius: '8px', color: '#ff6b8a', fontSize: '0.875rem',
         }}>
           {syncError}
+        </div>
+      )}
+
+      {generateError && (
+        <div style={{
+          padding: '12px 16px', marginBottom: '24px',
+          background: 'rgba(255,45,85,0.1)', border: '1px solid rgba(255,45,85,0.3)',
+          borderRadius: '8px', color: '#ff6b8a', fontSize: '0.875rem',
+        }}>
+          Generate error: {generateError}
         </div>
       )}
 
