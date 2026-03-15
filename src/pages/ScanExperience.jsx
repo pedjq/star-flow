@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, MapPin, Send } from 'lucide-react';
+import { Star, MapPin, Send, Copy, Check } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 
 const ScanExperience = () => {
@@ -11,6 +11,8 @@ const ScanExperience = () => {
   const [hoveredRating, setHoveredRating] = useState(0);
   const [step, setStep] = useState('loading');
   const [feedback, setFeedback] = useState('');
+  const [reviewDraft, setReviewDraft] = useState('');
+  const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
@@ -148,25 +150,61 @@ const ScanExperience = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="glass-panel"
-                style={{ padding: '40px 24px', textAlign: 'center' }}
+                style={{ padding: '32px 24px' }}
               >
-                <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255, 255, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-                  <Star size={32} fill="#fff" color="#fff" />
+                <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                  <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255, 255, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                    <Star size={32} fill="#fff" color="#fff" />
+                  </div>
+                  <h2 style={{ fontSize: '1.5rem', marginBottom: '8px', fontWeight: 600 }}>We're thrilled!</h2>
+                  <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, fontSize: '0.9rem' }}>
+                    Write a few words below, then we'll copy it and take you straight to Google.
+                  </p>
                 </div>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '16px', fontWeight: 600 }}>We're thrilled!</h2>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', lineHeight: 1.6 }}>
-                  Thank you for the {rating}-star rating! It would mean the world to us if you could share your experience on our Google page.
-                </p>
+
+                <textarea
+                  value={reviewDraft}
+                  onChange={(e) => setReviewDraft(e.target.value)}
+                  placeholder="What did you love about your visit?"
+                  rows={4}
+                  style={{
+                    width: '100%',
+                    padding: '14px',
+                    borderRadius: '10px',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid var(--glass-border)',
+                    color: 'white',
+                    fontFamily: 'inherit',
+                    fontSize: '1rem',
+                    resize: 'vertical',
+                    outline: 'none',
+                    marginBottom: '16px',
+                    boxSizing: 'border-box',
+                  }}
+                />
+
+                {copied && (
+                  <p style={{ textAlign: 'center', fontSize: '0.875rem', color: '#5be78b', marginBottom: '12px' }}>
+                    Copied! Just paste it into the review box on Google.
+                  </p>
+                )}
+
                 {shop?.google_maps_url ? (
                   <a
                     href={shop.place_id ? `https://search.google.com/local/writereview?placeid=${shop.place_id}` : shop.google_maps_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-primary"
-                    style={{ width: '100%', padding: '16px', fontSize: '1.125rem' }}
-                    onClick={() => setStep('thank_you')}
+                    style={{ width: '100%', padding: '16px', fontSize: '1.125rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                    onClick={() => {
+                      if (reviewDraft.trim()) {
+                        navigator.clipboard.writeText(reviewDraft);
+                        setCopied(true);
+                      }
+                      setTimeout(() => setStep('thank_you'), 500);
+                    }}
                   >
-                    <MapPin size={20} /> Leave a Review on Google
+                    {copied ? <Check size={20} /> : <MapPin size={20} />} Finish on Google Maps
                   </a>
                 ) : (
                   <button

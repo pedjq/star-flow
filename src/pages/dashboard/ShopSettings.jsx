@@ -103,14 +103,24 @@ const ShopSettings = () => {
             <h3 style={{ fontSize: '1.25rem', marginBottom: '24px', borderBottom: '1px solid var(--glass-border)', paddingBottom: '16px' }}>Routing & External Data</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '24px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '8px' }}>Google Maps Share URL (For 4/5 Star Routing)</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <label style={{ fontSize: '0.875rem', fontWeight: 500 }}>Google Maps Share URL (For 4/5 Star Routing)</label>
+                  <a href="https://business.google.com/locations" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
+                    Find your link →
+                  </a>
+                </div>
                 <input name="googleMapsUrl" value={formData.googleMapsUrl} onChange={handleChange} style={inputStyle} />
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
-                  Paste the 'Share' link from your Google My Business profile here.
+                  In Google Business Profile, click "Ask for reviews" and copy the link.
                 </p>
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '8px' }}>Google Place ID (For syncing reviews to Content Studio)</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <label style={{ fontSize: '0.875rem', fontWeight: 500 }}>Google Place ID (For syncing reviews to Content Studio)</label>
+                  <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
+                    Find your Place ID →
+                  </a>
+                </div>
                 <input name="placeId" value={formData.placeId} onChange={handleChange} style={inputStyle} />
               </div>
             </div>
