@@ -155,22 +155,22 @@ const FeatureCard = ({ number, title, description, graphic, delay }) => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.6, delay }}
-    className="glass-panel"
+    className="stakent-card"
     style={{
       padding: '40px',
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
       overflow: 'hidden',
-      height: '480px',
-      background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)'
+      height: '520px',
+      background: '#111218'
     }}
   >
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-      <h3 style={{ fontSize: '1.5rem', fontWeight: 600, width: '80%', lineHeight: 1.3 }}>{title}</h3>
-      <span style={{ fontSize: '2rem', fontWeight: 800, color: 'rgba(255,255,255,0.1)' }}>{number}</span>
+      <h3 style={{ fontSize: '1.75rem', fontWeight: 600, width: '85%', lineHeight: 1.2 }}>{title}</h3>
+      <span style={{ fontSize: '1.75rem', fontWeight: 800, color: 'rgba(255,255,255,0.1)' }}>{number}</span>
     </div>
-    <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--text-secondary)', marginBottom: '40px', zIndex: 1, position: 'relative' }}>
+    <p style={{ fontSize: '1rem', lineHeight: 1.6, color: 'var(--text-secondary)', marginBottom: '40px', zIndex: 1, position: 'relative' }}>
       {description}
     </p>
     
@@ -182,22 +182,22 @@ const FeatureCard = ({ number, title, description, graphic, delay }) => (
 
 const Features = () => {
   return (
-    <section id="works" className="section-padding" style={{ position: 'relative' }}>
+    <section id="works" style={{ padding: '120px 0', position: 'relative' }}>
       <div className="container">
         <div style={{ textAlign: 'center', marginBottom: '80px', maxWidth: '800px', margin: '0 auto' }}>
           <span className="pill-badge gradient" style={{ marginBottom: '24px' }}>How it works</span>
-          <h2 style={{ fontSize: '3rem', marginBottom: '24px', lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', fontWeight: 600, marginBottom: '24px', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
             3 Easy steps to clone your <br />
             <span className="text-accent">Google Reviews</span>
           </h2>
-          <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)' }}>
+          <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
             Scan, Filter, Amplify: Automatically capture feedback and instantly convert your happiest customers into your best marketers.
           </p>
         </div>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
           gap: '24px'
         }}>
           <FeatureCard 

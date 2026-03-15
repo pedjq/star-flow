@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 
+// Force Vite HMR reload
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>

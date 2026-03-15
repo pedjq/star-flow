@@ -21,10 +21,10 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY not configured' }), {
-        status: 500,
+      return new Response(JSON.stringify({ error: 'ANTHROPIC_API_KEY not configured' }), {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -45,40 +45,42 @@ Write a genuine, personalized reply that:
 - Mentions at least one specific detail from the review (so it feels like it was actually read)
 - Feels warm, human, and local — not corporate or generic
 - Matches the business persona/voice described above
-- Is 2-4 sentences maximum
+- Is 1-2 sentences maximum, keep it brief and punchy
 - Does NOT start with "Thank you for your review" or "We appreciate your feedback" (too generic)
 
 Respond with only the reply text, nothing else.`;
 
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.8, maxOutputTokens: 250 },
-        }),
-      }
-    );
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 300,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
 
-    const geminiData = await res.json();
+    const claudeData = await res.json();
 
-    if (!res.ok || !geminiData.candidates?.[0]?.content?.parts?.[0]?.text) {
-      return new Response(JSON.stringify({ error: 'Gemini API error', details: geminiData }), {
-        status: 500,
+    if (!res.ok || !claudeData.content?.[0]?.text) {
+      return new Response(JSON.stringify({ error: 'Claude API error: ' + JSON.stringify(claudeData) }), {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const response = geminiData.candidates[0].content.parts[0].text.trim();
+    const response = claudeData.content[0].text.trim();
 
     return new Response(JSON.stringify({ response }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
+    return new Response(JSON.stringify({ error: 'Exception: ' + String(err) }), {
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
