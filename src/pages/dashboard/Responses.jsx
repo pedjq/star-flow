@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { RefreshCw, Sparkles, Copy, Check, RotateCcw, Send, Settings } from 'lucide-react';
+import { FaGoogle, FaYelp, FaTripadvisor, FaFacebookF } from 'react-icons/fa';
 import { supabase } from '../../lib/supabaseClient';
 import { useShop } from '../../hooks/useShop';
 
 const PLATFORMS = [
-  { id: 'google',      label: 'Google',      idField: 'place_id' },
-  { id: 'yelp',        label: 'Yelp',        idField: 'yelp_url' },
-  { id: 'tripadvisor', label: 'TripAdvisor', idField: 'tripadvisor_url' },
-  { id: 'facebook',    label: 'Facebook',    idField: 'facebook_url' },
+  { id: 'google',      label: 'Google',      idField: 'place_id',        Icon: FaGoogle,      color: '#4285F4' },
+  { id: 'yelp',        label: 'Yelp',        idField: 'yelp_url',        Icon: FaYelp,        color: '#FF1A1A' },
+  { id: 'tripadvisor', label: 'TripAdvisor', idField: 'tripadvisor_url', Icon: FaTripadvisor, color: '#34E0A1' },
+  { id: 'facebook',    label: 'Facebook',    idField: 'facebook_url',    Icon: FaFacebookF,   color: '#1877F2' },
 ];
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -191,26 +192,28 @@ const Responses = () => {
         {PLATFORMS.map(p => {
           const configured = !!shop?.[p.idField];
           const isActive = activePlatform === p.id;
+          const iconColor = isActive ? p.color : configured ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.25)';
           return (
             <button
               key={p.id}
               onClick={() => setActivePlatform(p.id)}
               style={{
-                padding: '8px 20px',
+                padding: '8px 18px',
                 borderRadius: '100px',
                 border: isActive
-                  ? '1px solid rgba(155, 45, 242, 0.6)'
+                  ? `1px solid ${p.color}55`
                   : '1px solid var(--glass-border)',
-                background: isActive ? 'rgba(155, 45, 242, 0.12)' : 'transparent',
-                color: isActive ? '#c084fc' : configured ? 'rgba(255,255,255,0.75)' : 'var(--text-secondary)',
+                background: isActive ? `${p.color}18` : 'transparent',
+                color: isActive ? '#fff' : configured ? 'rgba(255,255,255,0.75)' : 'var(--text-secondary)',
                 cursor: 'pointer',
-                fontSize: '0.9rem',
+                fontSize: '0.875rem',
                 fontWeight: isActive ? 600 : 400,
                 fontFamily: 'inherit',
-                display: 'flex', alignItems: 'center', gap: '6px',
+                display: 'flex', alignItems: 'center', gap: '7px',
                 transition: 'all 0.2s',
               }}
             >
+              <p.Icon size={14} color={iconColor} />
               {p.label}
               {!configured && (
                 <span style={{ fontSize: '0.65rem', opacity: 0.5, border: '1px solid currentColor', borderRadius: '3px', padding: '0 3px' }}>+</span>
@@ -235,8 +238,8 @@ const Responses = () => {
       {/* Not configured */}
       {!isConfigured && (
         <div className="stakent-card" style={{ textAlign: 'center', padding: '60px 24px' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '16px' }}>
-            {activePlatform === 'yelp' ? '⭐' : activePlatform === 'tripadvisor' ? '🦉' : activePlatform === 'facebook' ? '👍' : '🔍'}
+          <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: `${currentPlatformConfig?.color}18`, border: `1px solid ${currentPlatformConfig?.color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            {currentPlatformConfig?.Icon && <currentPlatformConfig.Icon size={24} color={currentPlatformConfig.color} />}
           </div>
           <h3 style={{ marginBottom: '12px' }}>Connect {currentPlatformConfig?.label}</h3>
           <p style={{ color: 'var(--text-secondary)', maxWidth: '340px', margin: '0 auto 24px', lineHeight: 1.6 }}>
