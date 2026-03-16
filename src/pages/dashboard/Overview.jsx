@@ -155,9 +155,6 @@ const TimeSavedCard = ({ minutesSaved, loading }) => {
         <div className="card-value" style={{ fontSize: minutesSaved >= 60 ? '2rem' : '2rem', color: '#c084fc' }}>
           {loading ? '—' : display}
         </div>
-        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
-          ~3 min per AI reply · {loading ? '—' : Math.round(minutesSaved / 3)} replies generated
-        </div>
       </div>
     </div>
   );
@@ -380,7 +377,7 @@ const Overview = () => {
                     <p style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.9)', margin: 0, lineHeight: 1.5 }}>"{item.message}"</p>
                   </div>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
-                    {format(new Date(item.created_at), 'MMM dd')}
+                    {format(new Date(item.created_at), 'MMM d, h:mm a')}
                   </span>
                 </div>
               ))

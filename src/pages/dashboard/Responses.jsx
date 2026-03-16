@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { RefreshCw, Sparkles, Copy, Check, RotateCcw, Send, Settings } from 'lucide-react';
+import { RefreshCw, Sparkles, Copy, Check, RotateCcw, Send, Settings, ChevronDown, ChevronUp } from 'lucide-react';
 import { FaGoogle, FaYelp, FaTripadvisor, FaFacebookF } from 'react-icons/fa';
 import { supabase } from '../../lib/supabaseClient';
 import { useShop } from '../../hooks/useShop';
@@ -25,6 +25,7 @@ const Responses = () => {
   const [generatingId, setGeneratingId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const [generateError, setGenerateError] = useState('');
+  const [expandedSentMap, setExpandedSentMap] = useState({});
 
   useEffect(() => {
     if (shop?.id) fetchSavedResponses();
@@ -150,6 +151,7 @@ const Responses = () => {
   const markAsSent = async (review) => {
     const key = `${activePlatform}:${review.author}`;
     setSentMap(prev => ({ ...prev, [key]: true }));
+    setExpandedSentMap(prev => ({ ...prev, [key]: false }));
     await supabase
       .from('review_responses')
       .update({ sent: true })
@@ -274,7 +276,11 @@ const Responses = () => {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {reviews.map(review => {
+            {[...reviews].sort((a, b) => {
+              const aKey = `${activePlatform}:${a.author}`;
+              const bKey = `${activePlatform}:${b.author}`;
+              return (sentMap[aKey] ? 1 : 0) - (sentMap[bKey] ? 1 : 0);
+            }).map(review => {
               const key = `${activePlatform}:${review.author}`;
               const savedResponse = responseMap[key];
               const editedText = editMap[key] ?? savedResponse;
@@ -282,9 +288,15 @@ const Responses = () => {
               const isCopied = copiedId === key;
               const isSent = sentMap[key];
               const hasResponse = !!savedResponse;
+              const draftVisible = hasResponse && (!isSent || expandedSentMap[key]);
 
               return (
-                <div key={review.id} className="stakent-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div key={review.id} className="stakent-card" style={{
+                  display: 'flex', flexDirection: 'column', gap: '20px',
+                  border: isSent ? '1px solid rgba(91,231,139,0.2)' : undefined,
+                  opacity: isSent ? 0.75 : 1,
+                  transition: 'opacity 0.3s, border 0.3s',
+                }}>
 
                   {/* Review header */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
@@ -297,8 +309,14 @@ const Responses = () => {
                           ))}
                         </div>
                         {isSent && (
-                          <span style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: '100px', background: 'rgba(91,231,139,0.1)', color: '#5be78b', fontWeight: 500 }}>
-                            Sent ✓
+                          <span style={{
+                            fontSize: '0.75rem', padding: '3px 10px', borderRadius: '100px',
+                            background: 'linear-gradient(135deg, rgba(91,231,139,0.2), rgba(52,211,153,0.15))',
+                            border: '1px solid rgba(91,231,139,0.4)',
+                            color: '#5be78b', fontWeight: 600,
+                            boxShadow: '0 0 10px rgba(91,231,139,0.15)',
+                          }}>
+                            ✦ Reply sent
                           </span>
                         )}
                         {hasResponse && !isSent && (
@@ -315,32 +333,47 @@ const Responses = () => {
                       </p>
                     </div>
 
-                    <button
-                      onClick={() => generateReply(review)}
-                      disabled={isGenerating}
-                      className="stakent-btn"
-                      style={{ flexShrink: 0, opacity: isGenerating ? 0.6 : 1, whiteSpace: 'nowrap' }}
-                    >
-                      <Sparkles size={15} style={{ animation: isGenerating ? 'spin 1s linear infinite' : 'none' }} />
-                      {isGenerating ? 'Generating...' : hasResponse ? 'Regenerate' : 'Generate Reply'}
-                    </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', flexShrink: 0 }}>
+                      {!isSent && (
+                        <button
+                          onClick={() => generateReply(review)}
+                          disabled={isGenerating}
+                          className="stakent-btn"
+                          style={{ opacity: isGenerating ? 0.6 : 1, whiteSpace: 'nowrap' }}
+                        >
+                          <Sparkles size={15} style={{ animation: isGenerating ? 'spin 1s linear infinite' : 'none' }} />
+                          {isGenerating ? 'Generating...' : hasResponse ? 'Regenerate' : 'Generate Reply'}
+                        </button>
+                      )}
+                      {isSent && hasResponse && (
+                        <button
+                          onClick={() => setExpandedSentMap(prev => ({ ...prev, [key]: !prev[key] }))}
+                          style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)', borderRadius: '6px', padding: '5px 12px', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'inherit' }}
+                        >
+                          {expandedSentMap[key] ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                          {expandedSentMap[key] ? 'Hide reply' : 'View reply'}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* AI Draft */}
-                  {hasResponse && (
+                  {draftVisible && (
                     <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '20px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
                         <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                           AI Draft Reply
                         </div>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                          <button
-                            onClick={() => generateReply(review)}
-                            disabled={isGenerating}
-                            style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: isGenerating ? 0.5 : 1, fontFamily: 'inherit' }}
-                          >
-                            <RotateCcw size={12} /> Regenerate
-                          </button>
+                          {!isSent && (
+                            <button
+                              onClick={() => generateReply(review)}
+                              disabled={isGenerating}
+                              style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: isGenerating ? 0.5 : 1, fontFamily: 'inherit' }}
+                            >
+                              <RotateCcw size={12} /> Regenerate
+                            </button>
+                          )}
                           <button
                             onClick={() => copyReply(key)}
                             className="stakent-btn"
@@ -365,11 +398,14 @@ const Responses = () => {
                         value={editedText}
                         onChange={(e) => setEditMap(prev => ({ ...prev, [key]: e.target.value }))}
                         rows={4}
+                        readOnly={isSent}
                         style={{ width: '100%', padding: '16px', borderRadius: '10px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.9)', fontFamily: 'inherit', fontSize: '0.9375rem', lineHeight: 1.65, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }}
                       />
-                      <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
-                        Edit above if needed, copy it, paste into {currentPlatformConfig?.label}, then hit "Mark as Sent".
-                      </p>
+                      {!isSent && (
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                          Edit above if needed, copy it, paste into {currentPlatformConfig?.label}, then hit "Mark as Sent".
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
