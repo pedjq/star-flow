@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Star, ShieldAlert, MessageSquare } from 'lucide-react';
-
+import { Star, ShieldAlert, MessageSquare, Clock } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import { useShop } from '../../hooks/useShop';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -44,9 +43,130 @@ const MetricCard = ({ title, value, icon, trend }) => (
   </div>
 );
 
+const StarTargetCard = ({ starData, loading }) => {
+  if (loading) {
+    return (
+      <div className="stakent-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '160px' }}>
+        <span style={{ color: 'var(--text-secondary)' }}>Loading...</span>
+      </div>
+    );
+  }
+
+  const { avgRating, nextMilestone, prevMilestone, reviewsNeeded, progressPct, ratingCount } = starData;
+
+  if (ratingCount === 0) {
+    return (
+      <div className="stakent-card" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <div style={{ fontSize: '2.5rem' }}>⭐</div>
+        <div>
+          <div style={{ fontWeight: 600, marginBottom: '4px' }}>Star Rating Tracker</div>
+          <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+            Collect your first QR scan to start tracking your rating milestone.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const atMax = avgRating >= 4.95;
+
+  return (
+    <div className="stakent-card" style={{ position: 'relative', overflow: 'hidden' }}>
+      <div className="bg-glow" style={{ top: '-30%', right: '-10%', width: '200px', height: '200px', background: 'rgba(244, 160, 23, 0.08)', filter: 'blur(50px)', position: 'absolute', borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
+
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+
+        {/* Big Rating */}
+        <div style={{ textAlign: 'center', minWidth: '100px' }}>
+          <div style={{ fontSize: '3rem', fontWeight: 700, lineHeight: 1, color: '#f4a017', letterSpacing: '-0.03em' }}>
+            {avgRating.toFixed(1)}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '2px', marginTop: '6px' }}>
+            {[1, 2, 3, 4, 5].map(s => (
+              <Star
+                key={s}
+                size={13}
+                fill={s <= Math.round(avgRating) ? '#f4a017' : 'transparent'}
+                color={s <= Math.round(avgRating) ? '#f4a017' : 'rgba(255,255,255,0.15)'}
+              />
+            ))}
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+            {ratingCount} scan{ratingCount !== 1 ? 's' : ''}
+          </div>
+        </div>
+
+        {/* Progress */}
+        <div style={{ flex: 1, minWidth: '180px' }}>
+          <div className="card-title" style={{ marginBottom: '12px' }}>
+            Rating Target
+          </div>
+
+          {atMax ? (
+            <div style={{ fontSize: '1rem', fontWeight: 600, color: '#f4a017' }}>
+              You're at 5.0 ⭐ — perfect score!
+            </div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.8rem' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>{prevMilestone.toFixed(1)}</span>
+                <span style={{ color: '#f4a017', fontWeight: 600 }}>Next: {nextMilestone.toFixed(1)} ⭐</span>
+              </div>
+
+              {/* Progress bar */}
+              <div style={{ height: '8px', background: 'rgba(255,255,255,0.06)', borderRadius: '100px', overflow: 'hidden', marginBottom: '12px' }}>
+                <div style={{
+                  height: '100%',
+                  width: `${progressPct}%`,
+                  background: 'linear-gradient(90deg, #f4a017, #f97316)',
+                  borderRadius: '100px',
+                  transition: 'width 0.6s ease',
+                }} />
+              </div>
+
+              <div style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
+                <span style={{ color: '#f4a017', fontWeight: 700 }}>{reviewsNeeded}</span> more 5-star scan{reviewsNeeded !== 1 ? 's' : ''} to hit{' '}
+                <span style={{ color: '#f4a017' }}>{nextMilestone.toFixed(1)} ★</span>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TimeSavedCard = ({ minutesSaved, loading }) => {
+  const hrs = Math.floor(minutesSaved / 60);
+  const mins = minutesSaved % 60;
+  const display = hrs > 0 ? `${hrs}h ${mins > 0 ? `${mins}m` : ''}`.trim() : `${mins}m`;
+
+  return (
+    <div className="stakent-card" style={{ position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '100px', height: '100px', background: 'rgba(155, 45, 242, 0.1)', filter: 'blur(30px)', borderRadius: '50%' }} />
+      <div className="card-title" style={{ position: 'relative', zIndex: 1 }}>
+        Time Saved by AI
+        <div style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <Clock size={20} color="#c084fc" />
+        </div>
+      </div>
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="card-value" style={{ fontSize: minutesSaved >= 60 ? '2rem' : '2rem', color: '#c084fc' }}>
+          {loading ? '—' : display}
+        </div>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
+          ~3 min per AI reply · {loading ? '—' : Math.round(minutesSaved / 3)} replies generated
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Overview = () => {
   const { shop, loading: shopLoading } = useShop();
   const [metrics, setMetrics] = useState({ totalScans: 0, reviewsGained: 0, negativeFeedback: 0, pendingReplies: 0 });
+  const [starData, setStarData] = useState({ avgRating: 0, nextMilestone: 0.1, prevMilestone: 0, reviewsNeeded: 0, progressPct: 0, ratingCount: 0 });
+  const [minutesSaved, setMinutesSaved] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [recentFeedback, setRecentFeedback] = useState([]);
   const [metricsLoading, setMetricsLoading] = useState(true);
@@ -56,7 +176,7 @@ const Overview = () => {
 
     const fetchMetrics = async () => {
       setMetricsLoading(true);
-      
+
       const today = startOfDay(new Date());
       const dates = Array.from({ length: 7 }, (_, i) => subDays(today, 6 - i));
       const chartMap = dates.reduce((acc, date) => {
@@ -64,31 +184,49 @@ const Overview = () => {
         return acc;
       }, {});
 
-      const [totalRes, positiveRes, negativeRes, recentRes, feedbackRes, aiRepliesRes] = await Promise.all([
+      const [totalRes, positiveRes, negativeRes, recentRes, feedbackRes, pendingRepliesRes, allRatingsRes, totalRepliesRes] = await Promise.all([
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id),
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id).gte('rating', 4),
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id).lte('rating', 3),
         supabase.from('feedback').select('id, rating, message, customer_name, created_at').eq('shop_id', shop.id).lte('rating', 3).order('created_at', { ascending: false }).limit(5),
         supabase.from('feedback').select('rating, created_at').eq('shop_id', shop.id).gte('created_at', dates[0].toISOString()),
         supabase.from('review_responses').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id).eq('sent', false),
+        supabase.from('feedback').select('rating').eq('shop_id', shop.id),
+        supabase.from('review_responses').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id),
       ]);
-      
+
       if (feedbackRes.data) {
         feedbackRes.data.forEach(item => {
-           const dateStr = format(new Date(item.created_at), 'MMM dd');
-           if (chartMap[dateStr]) {
-             if (item.rating >= 4) chartMap[dateStr].positive += 1;
-             else chartMap[dateStr].negative += 1;
-           }
+          const dateStr = format(new Date(item.created_at), 'MMM dd');
+          if (chartMap[dateStr]) {
+            if (item.rating >= 4) chartMap[dateStr].positive += 1;
+            else chartMap[dateStr].negative += 1;
+          }
         });
       }
+
+      // Star target calculation
+      const allRatings = allRatingsRes.data ?? [];
+      const ratingCount = allRatings.length;
+      const ratingSum = allRatings.reduce((s, r) => s + r.rating, 0);
+      const avgRating = ratingCount > 0 ? ratingSum / ratingCount : 0;
+      const nextMilestone = Math.min(parseFloat((Math.floor(avgRating * 10 + 1) / 10).toFixed(1)), 5.0);
+      const prevMilestone = parseFloat((nextMilestone - 0.1).toFixed(1));
+      const reviewsNeeded = avgRating < 4.95
+        ? Math.max(1, Math.ceil((nextMilestone * ratingCount - ratingSum) / (5 - nextMilestone)))
+        : 0;
+      const progressPct = ratingCount > 0
+        ? Math.min(100, Math.max(0, ((avgRating - prevMilestone) / 0.1) * 100))
+        : 0;
 
       setMetrics({
         totalScans: totalRes.count ?? 0,
         reviewsGained: positiveRes.count ?? 0,
         negativeFeedback: negativeRes.count ?? 0,
-        pendingReplies: aiRepliesRes.count ?? 0,
+        pendingReplies: pendingRepliesRes.count ?? 0,
       });
+      setStarData({ avgRating, nextMilestone, prevMilestone, reviewsNeeded, progressPct, ratingCount });
+      setMinutesSaved((totalRepliesRes.count ?? 0) * 3);
       setChartData(Object.values(chartMap));
       setRecentFeedback(recentRes.data ?? []);
       setMetricsLoading(false);
@@ -111,6 +249,7 @@ const Overview = () => {
         </button>
       </div>
 
+      {/* Top metrics */}
       <div className="dashboard-grid">
         <MetricCard
           title="Total Scans"
@@ -137,17 +276,23 @@ const Overview = () => {
         />
       </div>
 
+      {/* Star Target + Time Saved */}
       <div className="dashboard-grid cols-2" style={{ marginTop: '24px' }}>
-        
-        {/* Real Data Chart matching landing page glow aesthetic */}
+        <StarTargetCard starData={starData} loading={loading} />
+        <TimeSavedCard minutesSaved={minutesSaved} loading={loading} />
+      </div>
+
+      {/* Chart + Recent Feedback */}
+      <div className="dashboard-grid cols-2" style={{ marginTop: '24px' }}>
+
         <div className="stakent-card" style={{ display: 'flex', flexDirection: 'column', minHeight: '400px' }}>
           <div className="bg-glow purple" style={{ top: '-10%', right: '-10%', width: '300px', height: '300px', opacity: 0.3 }} />
-          
+
           <div className="card-title" style={{ fontSize: '1.25rem', color: '#fff' }}>
             7-Day Engagement Trend
             <span className="pill-badge" style={{ fontSize: '0.75rem', padding: '4px 12px', background: 'rgba(255,255,255,0.05)', color: '#fff' }}>Weekly</span>
           </div>
-          
+
           <div style={{ flex: 1, minHeight: 0, zIndex: 1, marginTop: '24px' }}>
             {loading ? (
               <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Loading chart data...</div>
