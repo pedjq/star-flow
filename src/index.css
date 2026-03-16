@@ -256,13 +256,21 @@ p {
   stroke-dasharray: 4 4;
 }
 
-/* How it works two-column layout */
+/* How it works layout */
 .how-it-works-grid {
   grid-template-columns: 1fr;
 }
-@media(min-width: 900px) {
+@media(min-width: 960px) {
   .how-it-works-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+.step-cards-grid {
+  grid-template-columns: 1fr;
+}
+@media(min-width: 540px) {
+  .step-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
