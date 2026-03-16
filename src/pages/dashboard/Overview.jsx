@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Star, ShieldAlert, MessageSquare, Clock } from 'lucide-react';
+import { Star, ShieldAlert, MessageSquare, Clock, RefreshCw } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import { useShop } from '../../hooks/useShop';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -52,7 +52,8 @@ const StarTargetCard = ({ starData, loading }) => {
     );
   }
 
-  const { avgRating, nextMilestone, prevMilestone, reviewsNeeded, progressPct, ratingCount } = starData;
+  const { avgRating, nextMilestone, prevMilestone, reviewsNeeded, progressPct, ratingCount, starSource } = starData;
+  const reviewLabel = starSource === 'google' ? 'Google review' : 'scan';
 
   if (ratingCount === 0) {
     return (
@@ -61,7 +62,7 @@ const StarTargetCard = ({ starData, loading }) => {
         <div>
           <div style={{ fontWeight: 600, marginBottom: '4px' }}>Star Rating Tracker</div>
           <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-            Collect your first QR scan to start tracking your rating milestone.
+            Sync your Google reviews or collect your first QR scan to start tracking your rating milestone.
           </div>
         </div>
       </div>
@@ -92,7 +93,7 @@ const StarTargetCard = ({ starData, loading }) => {
             ))}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-            {ratingCount} scan{ratingCount !== 1 ? 's' : ''}
+            {ratingCount} {reviewLabel}{ratingCount !== 1 ? 's' : ''}
           </div>
         </div>
 
@@ -125,7 +126,7 @@ const StarTargetCard = ({ starData, loading }) => {
               </div>
 
               <div style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
-                <span style={{ color: '#f4a017', fontWeight: 700 }}>{reviewsNeeded}</span> more 5-star scan{reviewsNeeded !== 1 ? 's' : ''} to hit{' '}
+                <span style={{ color: '#f4a017', fontWeight: 700 }}>{reviewsNeeded}</span> more 5-star {reviewLabel}{reviewsNeeded !== 1 ? 's' : ''} to hit{' '}
                 <span style={{ color: '#f4a017' }}>{nextMilestone.toFixed(1)} ★</span>
               </div>
             </>
@@ -170,6 +171,7 @@ const Overview = () => {
   const [chartData, setChartData] = useState([]);
   const [recentFeedback, setRecentFeedback] = useState([]);
   const [metricsLoading, setMetricsLoading] = useState(true);
+  const [fetchTrigger, setFetchTrigger] = useState(0);
 
   useEffect(() => {
     if (!shop) return;
@@ -184,7 +186,7 @@ const Overview = () => {
         return acc;
       }, {});
 
-      const [totalRes, positiveRes, negativeRes, recentRes, feedbackRes, pendingRepliesRes, allRatingsRes, totalRepliesRes] = await Promise.all([
+      const [totalRes, positiveRes, negativeRes, recentRes, feedbackRes, pendingRepliesRes, allRatingsRes, totalRepliesRes, googleCacheRes] = await Promise.all([
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id),
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id).gte('rating', 4),
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id).lte('rating', 3),
@@ -193,6 +195,7 @@ const Overview = () => {
         supabase.from('review_responses').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id).eq('sent', false),
         supabase.from('feedback').select('rating').eq('shop_id', shop.id),
         supabase.from('review_responses').select('*', { count: 'exact', head: true }).eq('shop_id', shop.id),
+        supabase.from('cached_reviews').select('overall_rating, total_ratings').eq('shop_id', shop.id).eq('platform', 'google').maybeSingle(),
       ]);
 
       if (feedbackRes.data) {
@@ -205,11 +208,21 @@ const Overview = () => {
         });
       }
 
-      // Star target calculation
-      const allRatings = allRatingsRes.data ?? [];
-      const ratingCount = allRatings.length;
-      const ratingSum = allRatings.reduce((s, r) => s + r.rating, 0);
-      const avgRating = ratingCount > 0 ? ratingSum / ratingCount : 0;
+      // Star target calculation — prefer Google's real rating if cached, else fall back to feedback table
+      const googleCache = googleCacheRes.data;
+      let ratingCount, ratingSum, avgRating, starSource;
+      if (googleCache?.overall_rating && googleCache?.total_ratings) {
+        avgRating = googleCache.overall_rating;
+        ratingCount = googleCache.total_ratings;
+        ratingSum = avgRating * ratingCount;
+        starSource = 'google';
+      } else {
+        const allRatings = allRatingsRes.data ?? [];
+        ratingCount = allRatings.length;
+        ratingSum = allRatings.reduce((s, r) => s + r.rating, 0);
+        avgRating = ratingCount > 0 ? ratingSum / ratingCount : 0;
+        starSource = 'feedback';
+      }
       const nextMilestone = Math.min(parseFloat((Math.floor(avgRating * 10 + 1) / 10).toFixed(1)), 5.0);
       const prevMilestone = parseFloat((nextMilestone - 0.1).toFixed(1));
       const reviewsNeeded = avgRating < 4.95
@@ -225,7 +238,7 @@ const Overview = () => {
         negativeFeedback: negativeRes.count ?? 0,
         pendingReplies: pendingRepliesRes.count ?? 0,
       });
-      setStarData({ avgRating, nextMilestone, prevMilestone, reviewsNeeded, progressPct, ratingCount });
+      setStarData({ avgRating, nextMilestone, prevMilestone, reviewsNeeded, progressPct, ratingCount, starSource });
       setMinutesSaved((totalRepliesRes.count ?? 0) * 3);
       setChartData(Object.values(chartMap));
       setRecentFeedback(recentRes.data ?? []);
@@ -233,7 +246,7 @@ const Overview = () => {
     };
 
     fetchMetrics();
-  }, [shop]);
+  }, [shop, fetchTrigger]);
 
   const loading = shopLoading || metricsLoading;
 
@@ -244,8 +257,9 @@ const Overview = () => {
           <h1 style={{ fontSize: '2rem', marginBottom: '4px', fontWeight: 700 }}>Dashboard Overview</h1>
           <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Welcome back to your central reputation hub.</p>
         </div>
-        <button className="stakent-btn primary">
-          Refresh Data
+        <button className="stakent-btn primary" onClick={() => setFetchTrigger(t => t + 1)} disabled={metricsLoading}>
+          <RefreshCw size={15} style={{ animation: metricsLoading ? 'spin 1s linear infinite' : 'none' }} />
+          {metricsLoading ? 'Refreshing...' : 'Refresh Data'}
         </button>
       </div>
 

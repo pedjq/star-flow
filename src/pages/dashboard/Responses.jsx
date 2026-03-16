@@ -67,12 +67,13 @@ const Responses = () => {
     if (!forceRefresh) {
       const { data: cached } = await supabase
         .from('cached_reviews')
-        .select('reviews, fetched_at')
+        .select('reviews, fetched_at, overall_rating, total_ratings')
         .eq('shop_id', shop.id)
         .eq('platform', platform)
         .single();
 
-      if (cached && (Date.now() - new Date(cached.fetched_at).getTime()) < CACHE_TTL_MS) {
+      const fresh = cached && (Date.now() - new Date(cached.fetched_at).getTime()) < CACHE_TTL_MS;
+      if (fresh) {
         setReviewsByPlatform(prev => ({ ...prev, [platform]: cached.reviews }));
         setLoadingPlatform(null);
         return;
@@ -90,11 +91,16 @@ const Responses = () => {
     } else {
       const reviews = data.reviews ?? [];
       setReviewsByPlatform(prev => ({ ...prev, [platform]: reviews }));
-      // Save to cache
-      await supabase.from('cached_reviews').upsert(
-        { shop_id: shop.id, platform, reviews, fetched_at: new Date().toISOString() },
-        { onConflict: 'shop_id,platform' }
-      );
+      // Save to cache (include Google's overall rating if available)
+      const cachePayload = {
+        shop_id: shop.id,
+        platform,
+        reviews,
+        fetched_at: new Date().toISOString(),
+        ...(platform === 'google' && { overall_rating: data.overallRating ?? null, total_ratings: data.totalRatings ?? null }),
+      };
+      const { error: upsertErr } = await supabase.from('cached_reviews').upsert(cachePayload, { onConflict: 'shop_id,platform' });
+      if (upsertErr) setSyncError('Cache save failed: ' + upsertErr.message);
     }
 
     setLoadingPlatform(null);

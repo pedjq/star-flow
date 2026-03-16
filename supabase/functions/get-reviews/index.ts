@@ -33,7 +33,7 @@ Deno.serve(async (req: Request) => {
         });
       }
 
-      const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${identifier}&fields=reviews&key=${apiKey}`;
+      const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${identifier}&fields=reviews,rating,user_ratings_total&key=${apiKey}`;
       const res = await fetch(url);
       const data = await res.json();
 
@@ -43,6 +43,9 @@ Deno.serve(async (req: Request) => {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
+
+      const overallRating: number | null = data.result?.rating ?? null;
+      const totalRatings: number | null = data.result?.user_ratings_total ?? null;
 
       const allReviews = data.result?.reviews ?? [];
       reviews = allReviews
@@ -55,6 +58,10 @@ Deno.serve(async (req: Request) => {
           date: r.relative_time_description,
           photo: r.profile_photo_url ?? null,
         }));
+
+      return new Response(JSON.stringify({ reviews, overallRating, totalRatings }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
 
     // ─── Yelp / TripAdvisor / Facebook (Outscraper) ───────────────────────────
     } else {
