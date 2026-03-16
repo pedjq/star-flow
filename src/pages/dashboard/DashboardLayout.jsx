@@ -25,7 +25,7 @@ const DashboardLayout = () => {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: '#0b0c10' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', background: '#0b0c10', overflow: 'hidden' }}>
       
       {/* Sidebar */}
       <aside style={{
@@ -97,7 +97,7 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, padding: '40px', overflowY: 'auto', position: 'relative' }}>
+      <main style={{ flex: 1, minWidth: 0, padding: '40px', overflowY: 'auto', overflowX: 'hidden', position: 'relative' }}>
         <div className="bg-glow blue" style={{ top: '-10%', right: '-10%', width: '400px', height: '400px', opacity: 0.1 }} />
         
         <div style={{ maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 10 }}>

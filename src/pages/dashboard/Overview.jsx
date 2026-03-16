@@ -261,7 +261,7 @@ const Overview = () => {
       </div>
 
       {/* Top metrics */}
-      <div className="dashboard-grid">
+      <div className="dashboard-grid cols-4">
         <MetricCard
           title="Total Scans"
           value={loading ? '—' : metrics.totalScans}
