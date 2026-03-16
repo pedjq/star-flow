@@ -256,6 +256,16 @@ p {
   stroke-dasharray: 4 4;
 }
 
+/* How it works two-column layout */
+.how-it-works-grid {
+  grid-template-columns: 1fr;
+}
+@media(min-width: 900px) {
+  .how-it-works-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 /* Dashboard Specific UI (Stakent Reference) */
 .dashboard-grid {
   display: grid;
