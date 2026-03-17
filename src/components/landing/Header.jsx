@@ -50,10 +50,23 @@ const Header = () => {
           Star.Flow
         </div>
 
-        <div style={{ display: 'flex', gap: '32px', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-secondary)', display: 'none', '@media(min-width: 768px)': { display: 'flex' } }} className="nav-links">
-          <a href="#about" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = '#fff'} onMouseOut={e => e.target.style.color = 'var(--text-secondary)'}>About us</a>
-          <a href="#works" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = '#fff'} onMouseOut={e => e.target.style.color = 'var(--text-secondary)'}>How it works</a>
-          <a href="#pricing" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = '#fff'} onMouseOut={e => e.target.style.color = 'var(--text-secondary)'}>Pricing</a>
+        <div className="nav-links" style={{ display: 'flex', gap: '28px', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+          {[
+            { label: 'How it works', href: '#works' },
+            { label: 'Dashboard',    href: '#dashboard' },
+            { label: 'Compare',      href: '#compare' },
+            { label: 'Pricing',      href: '#pricing' },
+          ].map(({ label, href }) => (
+            <a
+              key={href}
+              href={href}
+              style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseOver={e => e.currentTarget.style.color = '#fff'}
+              onMouseOut={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+            >
+              {label}
+            </a>
+          ))}
         </div>
 
         <a href="/register" className="btn-outline" style={{ padding: '8px 20px', fontSize: '0.875rem' }}>

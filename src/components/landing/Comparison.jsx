@@ -45,7 +45,7 @@ const Comparison = () => {
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
   return (
-    <section style={{ padding: '80px 0 0', position: 'relative' }}>
+    <section id="compare" style={{ padding: '80px 0 0', position: 'relative' }}>
       <div className="container">
 
         <motion.div
