@@ -149,7 +149,7 @@ const Stats = () => {
           style={{ textAlign: 'center', marginBottom: '80px' }}
         >
           <h2 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: 700, letterSpacing: '-0.03em' }}>
-            See the difference<br />
+            Real results,<br />
             <span className="text-accent">unbelievably fast.</span>
           </h2>
         </motion.div>

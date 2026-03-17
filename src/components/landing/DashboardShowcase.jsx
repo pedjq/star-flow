@@ -1,25 +1,22 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  MessageSquare, BarChart3, QrCode, Image as ImageIcon,
+  MessageSquare, BarChart3, QrCode,
   Sparkles, LayoutDashboard, Settings, Send,
-  TrendingUp, Shield, Star, RefreshCw,
+  TrendingUp, Shield, Star, Zap,
 } from 'lucide-react';
 
-// Sidebar nav items (matches real dashboard)
 const NAV = [
-  { label: 'Overview', icon: LayoutDashboard },
-  { label: 'Content Studio', icon: ImageIcon },
-  { label: 'Responses', icon: MessageSquare },
+  { label: 'Overview',      icon: LayoutDashboard },
+  { label: 'Responses',     icon: MessageSquare },
   { label: 'QR Management', icon: QrCode },
-  { label: 'Settings', icon: Settings },
+  { label: 'Settings',      icon: Settings },
 ];
 
 const TABS = [
-  { icon: MessageSquare, label: 'AI Responses', desc: 'Reply to every review in seconds', color: '#9b2df2', navIndex: 2 },
-  { icon: BarChart3, label: 'Feedback Insights', desc: 'Track your reputation live', color: '#2b58ff', navIndex: 0 },
-  { icon: QrCode, label: 'QR Management', desc: 'Deploy and track scan activity', color: '#5be78b', navIndex: 3 },
-  { icon: ImageIcon, label: 'Content Studio', desc: 'Sync reviews and manage content', color: '#f4a017', navIndex: 1 },
+  { icon: MessageSquare, label: 'AI Responses',     desc: 'Replies sent automatically — just approve', color: '#9b2df2', navIndex: 1 },
+  { icon: BarChart3,    label: 'Feedback Insights', desc: 'Track your reputation live',                color: '#2b58ff', navIndex: 0 },
+  { icon: QrCode,       label: 'QR Management',     desc: 'Design and customize your branded card',   color: '#5be78b', navIndex: 2 },
 ];
 
 // ─── Panel: AI Responses ────────────────────────────────────────────────────
@@ -27,20 +24,25 @@ const ResponsesPanel = () => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
       <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff' }}>Review Responses</span>
-      <span style={{ fontSize: '0.58rem', padding: '2px 8px', borderRadius: '100px', background: 'rgba(155,45,242,0.12)', border: '1px solid rgba(155,45,242,0.28)', color: '#c084fc' }}>2 pending</span>
+      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+        <span style={{ fontSize: '0.55rem', padding: '2px 7px', borderRadius: '100px', background: 'rgba(91,231,139,0.1)', border: '1px solid rgba(91,231,139,0.25)', color: '#5be78b', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
+          <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#5be78b', display: 'inline-block' }} /> Autopilot ON
+        </span>
+        <span style={{ fontSize: '0.58rem', padding: '2px 8px', borderRadius: '100px', background: 'rgba(155,45,242,0.12)', border: '1px solid rgba(155,45,242,0.28)', color: '#c084fc' }}>2 pending</span>
+      </div>
     </div>
 
-    {/* Card 1 – replied */}
+    {/* Card 1 – auto-replied */}
     <div style={{ background: '#0f1015', border: '1px solid rgba(91,231,139,0.14)', borderRadius: '10px', padding: '10px 12px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
         <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#fff' }}>Sarah M.</span>
         <span style={{ color: '#f4a017', fontSize: '9px', letterSpacing: '1px' }}>★★★★★</span>
-        <span style={{ fontSize: '0.55rem', padding: '1px 6px', borderRadius: '100px', background: 'rgba(91,231,139,0.12)', border: '1px solid rgba(91,231,139,0.3)', color: '#5be78b', fontWeight: 700 }}>✦ Replied</span>
+        <span style={{ fontSize: '0.55rem', padding: '1px 6px', borderRadius: '100px', background: 'rgba(91,231,139,0.12)', border: '1px solid rgba(91,231,139,0.3)', color: '#5be78b', fontWeight: 700 }}>✦ Auto-sent</span>
       </div>
       <p style={{ fontSize: '0.63rem', color: 'rgba(255,255,255,0.45)', margin: 0, lineHeight: 1.5 }}>"Absolutely loved the atmosphere. Will definitely be back!"</p>
     </div>
 
-    {/* Card 2 – AI draft showing */}
+    {/* Card 2 – AI draft pending approval */}
     <div style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '10px 12px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
         <div>
@@ -48,24 +50,24 @@ const ResponsesPanel = () => (
             <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#fff' }}>James T.</span>
             <span style={{ color: '#f4a017', fontSize: '9px', letterSpacing: '1px' }}>★★★★★</span>
           </div>
-          <p style={{ fontSize: '0.63rem', color: 'rgba(255,255,255,0.45)', margin: 0, lineHeight: 1.5 }}>"Best coffee in town, hands down. The baristas are true artists."</p>
+          <p style={{ fontSize: '0.63rem', color: 'rgba(255,255,255,0.45)', margin: 0, lineHeight: 1.5 }}>"Best coffee in town, hands down."</p>
         </div>
       </div>
       <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div style={{ fontSize: '0.54rem', fontWeight: 700, color: 'rgba(255,255,255,0.22)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '5px' }}>AI Draft Reply</div>
+        <div style={{ fontSize: '0.54rem', fontWeight: 700, color: 'rgba(255,255,255,0.22)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '5px' }}>AI Draft — ready to send</div>
         <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '6px', padding: '7px 9px', fontSize: '0.62rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.55 }}>
-          Thank you, James! We're so glad you enjoyed the experience. Our team puts their heart into every cup — your kind words mean the world to us! ☕
+          Thank you, James! We're so glad you enjoyed the experience — your kind words mean the world to us! ☕
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '7px', gap: '5px' }}>
           <div style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.3)', borderRadius: '5px', padding: '3px 8px', fontSize: '0.58rem', cursor: 'default' }}>Copy</div>
           <div style={{ background: 'linear-gradient(135deg, #2b58ff, #9b2df2)', color: '#fff', borderRadius: '100px', padding: '3px 10px', fontSize: '0.6rem', fontWeight: 600, cursor: 'default', display: 'flex', alignItems: 'center', gap: '3px' }}>
-            <Send size={8} /> Mark as Sent
+            <Send size={8} /> Approve &amp; Send
           </div>
         </div>
       </div>
     </div>
 
-    {/* Card 3 – idle */}
+    {/* Card 3 */}
     <div style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
@@ -74,8 +76,8 @@ const ResponsesPanel = () => (
         </div>
         <p style={{ fontSize: '0.63rem', color: 'rgba(255,255,255,0.45)', margin: 0, lineHeight: 1.5 }}>"Staff was incredibly helpful and the food was delicious."</p>
       </div>
-      <div style={{ flexShrink: 0, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.55)', padding: '3px 9px', borderRadius: '100px', fontSize: '0.6rem', cursor: 'default', display: 'flex', alignItems: 'center', gap: '3px' }}>
-        <Sparkles size={8} /> Generate
+      <div style={{ flexShrink: 0, background: 'rgba(155,45,242,0.08)', border: '1px solid rgba(155,45,242,0.2)', color: '#c084fc', padding: '3px 9px', borderRadius: '100px', fontSize: '0.6rem', cursor: 'default', display: 'flex', alignItems: 'center', gap: '3px' }}>
+        <Sparkles size={8} /> Drafting...
       </div>
     </div>
   </div>
@@ -87,10 +89,10 @@ const InsightsPanel = () => (
     <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>Overview</span>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
       {[
-        { label: 'Total Scans', value: '247', Icon: QrCode, color: '#9b2df2' },
-        { label: 'Reviews Gained', value: '89', Icon: TrendingUp, color: '#5be78b' },
-        { label: 'Intercepted', value: '23', Icon: Shield, color: '#2b58ff' },
-        { label: 'Avg. Rating', value: '4.7 ★', Icon: Star, color: '#f4a017' },
+        { label: 'Total Scans',   value: '247',   Icon: QrCode,      color: '#9b2df2' },
+        { label: 'Reviews Gained', value: '89',   Icon: TrendingUp,  color: '#5be78b' },
+        { label: 'Intercepted',   value: '23',    Icon: Shield,      color: '#2b58ff' },
+        { label: 'Avg. Rating',   value: '4.7 ★', Icon: Star,        color: '#f4a017' },
       ].map(({ label, value, Icon, color }, i) => (
         <div key={i} style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '11px 13px' }}>
           <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)', marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -104,7 +106,7 @@ const InsightsPanel = () => (
       <div style={{ fontSize: '0.6rem', fontWeight: 700, color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '7px' }}>Recent Private Feedback</div>
       {[
         { stars: 2, text: 'Wait time was a bit long during peak hours', time: '2 days ago' },
-        { stars: 3, text: 'Good food but the music was too loud for conversation', time: '4 days ago' },
+        { stars: 3, text: 'Good food but the music was too loud', time: '4 days ago' },
       ].map((fb, i) => (
         <div key={i} style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 10px', marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
           <div>
@@ -118,8 +120,8 @@ const InsightsPanel = () => (
   </div>
 );
 
-// ─── Fake QR graphic ────────────────────────────────────────────────────────
-const FakeQR = () => {
+// ─── Fake QR ────────────────────────────────────────────────────────────────
+const FakeQR = ({ size = 72 }) => {
   const p = [
     1,1,1,1,1,1,1,0,1,0,0,1,0,0,1,1,1,1,1,1,1,
     1,0,0,0,0,0,1,0,0,1,1,0,1,0,1,0,0,0,0,0,1,
@@ -144,81 +146,82 @@ const FakeQR = () => {
     1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,
   ];
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(21, 1fr)', gap: '1.5px', width: '96px', height: '96px', background: 'white', padding: '7px', borderRadius: '8px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(21, 1fr)', gap: '1px', width: `${size}px`, height: `${size}px`, background: 'white', padding: '6px', borderRadius: '6px', flexShrink: 0 }}>
       {p.map((cell, i) => <div key={i} style={{ background: cell ? '#000' : '#fff', borderRadius: '0.5px' }} />)}
     </div>
   );
 };
 
-// ─── Panel: QR Management ───────────────────────────────────────────────────
+// ─── Panel: QR Management (with customization) ───────────────────────────────
 const QRPanel = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>QR Management</span>
-    <div style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '22px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
-      <FakeQR />
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.28)', marginBottom: '3px' }}>Scan URL</div>
-        <div style={{ fontSize: '0.65rem', color: '#9b2df2', fontFamily: 'monospace' }}>starflow.app/rate/a1b2c3</div>
-      </div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {['Download PNG', 'Download SVG', 'Copy Link'].map((label) => (
-          <div key={label} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.45)', padding: '4px 9px', borderRadius: '6px', fontSize: '0.58rem', cursor: 'default' }}>{label}</div>
-        ))}
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>QR Card Designer</span>
+
+    {/* Card preview */}
+    <div style={{ background: 'linear-gradient(145deg, #1a0a2e, #0a0714)', border: '1px solid rgba(155,45,242,0.25)', borderRadius: '12px', padding: '14px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <FakeQR size={68} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>Triple S Barbers</div>
+        <div style={{ fontSize: '0.56rem', color: 'rgba(255,255,255,0.38)', marginBottom: '7px' }}>Scan to rate your experience</div>
+        <div style={{ fontSize: '0.54rem', color: '#9b2df2', fontFamily: 'monospace' }}>starflow.app/rate/a1b2</div>
       </div>
     </div>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
-      {[{ label: 'Total Scans', value: '247' }, { label: 'This Week', value: '38' }].map(({ label, value }) => (
-        <div key={label} style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '12px', textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#fff', letterSpacing: '-0.03em' }}>{value}</div>
-          <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.32)', marginTop: '3px' }}>{label}</div>
+
+    {/* Customization panel */}
+    <div style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '11px 12px' }}>
+      <div style={{ fontSize: '0.56rem', fontWeight: 700, color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Customize</div>
+
+      <div style={{ marginBottom: '9px' }}>
+        <div style={{ fontSize: '0.59rem', color: 'rgba(255,255,255,0.38)', marginBottom: '5px' }}>Layout</div>
+        <div style={{ display: 'flex', gap: '5px' }}>
+          {['Portrait', 'Square', 'Landscape'].map((l, i) => (
+            <div key={l} style={{ flex: 1, background: i === 0 ? 'rgba(155,45,242,0.14)' : 'rgba(255,255,255,0.03)', border: i === 0 ? '1px solid rgba(155,45,242,0.4)' : '1px solid rgba(255,255,255,0.06)', borderRadius: '5px', padding: '4px', textAlign: 'center', fontSize: '0.54rem', color: i === 0 ? '#c084fc' : 'rgba(255,255,255,0.28)', cursor: 'default' }}>{l}</div>
+          ))}
         </div>
-      ))}
+      </div>
+
+      <div style={{ marginBottom: '9px' }}>
+        <div style={{ fontSize: '0.59rem', color: 'rgba(255,255,255,0.38)', marginBottom: '5px' }}>Background</div>
+        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+          {['#0f0a1e', '#1a0a2e', '#fff', '#111827', '#fafaf9'].map((c, i) => (
+            <div key={i} style={{ width: '18px', height: '18px', borderRadius: '4px', background: c, border: i === 0 ? '2px solid #9b2df2' : '1px solid rgba(255,255,255,0.1)', cursor: 'default', flexShrink: 0 }} />
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div style={{ fontSize: '0.59rem', color: 'rgba(255,255,255,0.38)', marginBottom: '5px' }}>Font Style</div>
+        <div style={{ display: 'flex', gap: '5px' }}>
+          {['Modern', 'Rounded', 'Elegant', 'Bold'].map((f, i) => (
+            <div key={f} style={{ flex: 1, background: i === 0 ? 'rgba(155,45,242,0.1)' : 'rgba(255,255,255,0.02)', border: i === 0 ? '1px solid rgba(155,45,242,0.3)' : '1px solid rgba(255,255,255,0.05)', borderRadius: '4px', padding: '3px', textAlign: 'center', fontSize: '0.52rem', color: i === 0 ? '#c084fc' : 'rgba(255,255,255,0.22)', cursor: 'default' }}>{f}</div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div style={{ background: 'linear-gradient(135deg, #9b2df2, #2b58ff)', color: '#fff', borderRadius: '8px', padding: '8px 14px', textAlign: 'center', fontSize: '0.63rem', fontWeight: 600, cursor: 'default', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+      <Zap size={11} /> Download Print-Ready PNG
     </div>
   </div>
 );
 
-// ─── Panel: Content Studio ──────────────────────────────────────────────────
-const ContentPanel = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff' }}>Content Studio</span>
-      <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)', padding: '3px 9px', borderRadius: '100px', fontSize: '0.6rem', cursor: 'default', display: 'flex', alignItems: 'center', gap: '4px' }}>
-        <RefreshCw size={8} /> Sync Reviews
-      </div>
-    </div>
-    {[
-      { name: 'Sarah M.', text: '"Absolutely loved the atmosphere. Will definitely be back!"', date: 'Mar 12' },
-      { name: 'James T.', text: '"Best coffee in town, hands down. The baristas are true artists."', date: 'Mar 10' },
-      { name: 'Maria K.', text: '"Staff was incredibly helpful and the food was delicious."', date: 'Mar 8' },
-    ].map((r) => (
-      <div key={r.name} style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-            <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#fff' }}>{r.name}</span>
-            <span style={{ color: '#f4a017', fontSize: '9px', letterSpacing: '1px' }}>★★★★★</span>
-            <span style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.22)' }}>{r.date}</span>
-          </div>
-          <p style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.48)', margin: 0, lineHeight: 1.5 }}>{r.text}</p>
-        </div>
-        <div style={{ flexShrink: 0, background: 'linear-gradient(135deg, rgba(43,88,255,0.14), rgba(155,45,242,0.14))', border: '1px solid rgba(155,45,242,0.22)', color: '#c084fc', padding: '4px 9px', borderRadius: '7px', fontSize: '0.58rem', fontWeight: 500, cursor: 'default', whiteSpace: 'nowrap' }}>
-          Create Post →
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-const PANELS = [<ResponsesPanel />, <InsightsPanel />, <QRPanel />, <ContentPanel />];
+const PANELS = [<ResponsesPanel />, <InsightsPanel />, <QRPanel />];
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 const DashboardShowcase = () => {
   const [active, setActive] = useState(0);
 
+  const colorRgb = (color) => {
+    if (color === '#9b2df2') return '155,45,242';
+    if (color === '#2b58ff') return '43,88,255';
+    if (color === '#5be78b') return '91,231,139';
+    return '255,255,255';
+  };
+
   return (
     <section id="dashboard" style={{ padding: '120px 0', position: 'relative' }}>
       <div className="container">
 
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -232,7 +235,7 @@ const DashboardShowcase = () => {
             <span className="text-accent">in one central hub.</span>
           </h2>
           <p style={{ fontSize: '1.0625rem', color: 'var(--text-secondary)', maxWidth: '480px', margin: '0 auto' }}>
-            Manage Google reviews, private feedback, QR codes, and content — all from a single, beautiful dashboard.
+            Manage Google reviews, private feedback, and custom QR codes — all from a single beautiful dashboard.
           </p>
         </motion.div>
 
@@ -246,7 +249,7 @@ const DashboardShowcase = () => {
                 key={i}
                 onClick={() => setActive(i)}
                 style={{
-                  background: isActive ? `rgba(${tab.color === '#9b2df2' ? '155,45,242' : tab.color === '#2b58ff' ? '43,88,255' : tab.color === '#5be78b' ? '91,231,139' : '244,160,23'}, 0.07)` : 'rgba(255,255,255,0.02)',
+                  background: isActive ? `rgba(${colorRgb(tab.color)}, 0.07)` : 'rgba(255,255,255,0.02)',
                   border: isActive ? `1px solid ${tab.color}44` : '1px solid rgba(255,255,255,0.06)',
                   borderRadius: '14px',
                   padding: '14px 16px',
@@ -310,7 +313,6 @@ const DashboardShowcase = () => {
 
           {/* Dashboard body */}
           <div style={{ display: 'flex', height: '420px' }}>
-
             {/* Sidebar */}
             <div style={{ width: '148px', flexShrink: 0, background: '#13141a', borderRight: '1px solid rgba(255,255,255,0.04)', padding: '16px 12px', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, fontSize: '0.875rem', marginBottom: '24px', paddingLeft: '4px', letterSpacing: '-0.02em' }}>

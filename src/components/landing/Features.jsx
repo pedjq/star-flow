@@ -26,8 +26,8 @@ const STEPS = [
   {
     number: '03',
     label: 'YOU PUBLISH',
-    title: 'One click — your rating climbs',
-    desc: 'Review the draft, hit Mark as Sent, and paste it into Google. Watch your score inch toward the next milestone.',
+    title: 'Copy, paste, watch your rating climb',
+    desc: 'Copy the AI draft with one click, paste it into Google, and watch your score inch toward the next milestone.',
     icon: Send,
     numColor: '#ffffff',
     bg: '#111218',

@@ -5,6 +5,8 @@ import Stats from '../components/landing/Stats';
 import DashboardShowcase from '../components/landing/DashboardShowcase';
 import Features from '../components/landing/Features';
 import Campaigns from '../components/landing/Campaigns';
+import Pricing from '../components/landing/Pricing';
+import Hardware from '../components/landing/Hardware';
 import Footer from '../components/landing/Footer';
 
 const LandingPage = () => {
@@ -23,6 +25,8 @@ const LandingPage = () => {
         <DashboardShowcase />
         <Features />
         <Campaigns />
+        <Pricing />
+        <Hardware />
       </main>
 
       <Footer />
