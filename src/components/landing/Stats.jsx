@@ -3,7 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { TrendingUp, ShieldCheck, Zap } from 'lucide-react';
 
 // Direct DOM updates — no React re-renders per frame, silky smooth on mobile
-const AnimatedNumber = ({ value, inView }) => {
+const AnimatedNumber = ({ value, inView, startDelay = 0 }) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -17,23 +17,26 @@ const AnimatedNumber = ({ value, inView }) => {
       return;
     }
 
-    const duration = 900;
-    const start = performance.now();
     let raf;
+    const duration = 800;
 
-    const tick = (now) => {
-      const t = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
-      el.textContent = Math.round(eased * numeric) + suffix;
-      if (t < 1) { raf = requestAnimationFrame(tick); }
-      else { el.textContent = value; }
+    const runAnimation = () => {
+      const start = performance.now();
+      const tick = (now) => {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(eased * numeric) + suffix;
+        if (t < 1) { raf = requestAnimationFrame(tick); }
+        else { el.textContent = value; }
+      };
+      raf = requestAnimationFrame(tick);
     };
 
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, value]);
+    const timer = setTimeout(runAnimation, startDelay);
+    return () => { clearTimeout(timer); cancelAnimationFrame(raf); };
+  }, [inView, value, startDelay]);
 
-  return <span ref={ref}>{value}</span>;
+  return <span ref={ref}>0</span>;
 };
 
 const GridPattern = ({ id, color, opacity }) => (
@@ -120,7 +123,7 @@ const StatCard = ({ delay, number, label, isLarge, icon: Icon, numColor, bg, bor
               fontFeatureSettings: '"tnum"',
             }}
           >
-            <AnimatedNumber value={number} inView={inView} />
+            <AnimatedNumber value={number} inView={inView} startDelay={Math.round((delay + 0.7) * 1000)} />
           </div>
           <div
             style={{
