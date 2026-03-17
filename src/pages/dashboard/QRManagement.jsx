@@ -50,7 +50,7 @@ const PrintCard = forwardRef(({ layout, bgColor, accentColor, mainLabel, subLabe
     }}>
       {isLandscape ? (
         <>
-          <QRCode value={qrUrl || 'https://starflow.app'} size={qrSize} fgColor={accentColor} bgColor={bgColor} style={{ display: 'block', flexShrink: 0 }} />
+          <QRCode value={qrUrl || 'https://starscalehub.com'} size={qrSize} fgColor={accentColor} bgColor={bgColor} style={{ display: 'block', flexShrink: 0 }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px', paddingLeft: '4px', maxWidth: '180px' }}>
             {logoEl}
             <div style={{ fontSize: '0.95rem', fontWeight: 700, color: accentColor, lineHeight: 1.3 }}>{mainLabel}</div>
@@ -63,7 +63,7 @@ const PrintCard = forwardRef(({ layout, bgColor, accentColor, mainLabel, subLabe
           {!isSquare && (
             <div style={{ fontSize: '1rem', fontWeight: 700, color: accentColor, textAlign: 'center', lineHeight: 1.3, maxWidth: '88%' }}>{mainLabel}</div>
           )}
-          <QRCode value={qrUrl || 'https://starflow.app'} size={qrSize} fgColor={accentColor} bgColor={bgColor} style={{ display: 'block', flexShrink: 0 }} />
+          <QRCode value={qrUrl || 'https://starscalehub.com'} size={qrSize} fgColor={accentColor} bgColor={bgColor} style={{ display: 'block', flexShrink: 0 }} />
           <div style={{ fontSize: isSquare ? '0.44rem' : '0.5rem', color: accentColor, textAlign: 'center', opacity: 0.62, letterSpacing: '0.1em', textTransform: 'uppercase', maxWidth: '88%', lineHeight: 1.5 }}>{subLabel}</div>
         </>
       )}
@@ -165,7 +165,7 @@ const QRManagement = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `StarFlow-QR.svg`;
+    link.download = `StarScaleHub-QR.svg`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -177,7 +177,7 @@ const QRManagement = () => {
       await document.fonts.ready;
       const dataUrl = await toPng(cardRef.current, { pixelRatio: 6, cacheBust: true });
       const link = document.createElement('a');
-      link.download = `StarFlow-QR-${shop?.name?.replace(/\s+/g, '-') || 'card'}.png`;
+      link.download = `StarScaleHub-QR-${shop?.name?.replace(/\s+/g, '-') || 'card'}.png`;
       link.href = dataUrl; link.click();
     } catch (err) { console.error(err); }
     finally { setDownloading(false); }

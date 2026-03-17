@@ -22,7 +22,7 @@ function emailHtml(shopName: string, reviewAuthor: string, reviewText: string, r
   <div style="max-width:560px;margin:0 auto;padding:40px 24px;">
 
     <div style="text-align:center;margin-bottom:32px;">
-      <div style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">★ StarFlow</div>
+      <div style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">★ StarScaleHub</div>
       <div style="color:#666;font-size:13px;margin-top:4px;">New review alert</div>
     </div>
 
@@ -46,7 +46,7 @@ function emailHtml(shopName: string, reviewAuthor: string, reviewText: string, r
     </div>
 
     <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;text-align:center;color:#444;font-size:12px;">
-      Sent by StarFlow for ${shopName}
+      Sent by StarScaleHub for ${shopName}
     </div>
 
   </div>
@@ -77,7 +77,7 @@ Deno.serve(async (req: Request) => {
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const googleApiKey = Deno.env.get('GOOGLE_PLACES_API_KEY')!;
     const resendKey = Deno.env.get('RESEND_API_KEY')!;
-    const appUrl = Deno.env.get('APP_URL') || 'https://star-flow.vercel.app';
+    const appUrl = Deno.env.get('APP_URL') || 'https://starscalehub.com';
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
@@ -164,7 +164,7 @@ Deno.serve(async (req: Request) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'StarFlow <onboarding@resend.dev>',
+            from: 'StarScaleHub <onboarding@resend.dev>',
             to: ownerEmail,
             subject: `New ${starsText(review.rating)} review from ${review.author_name}`,
             html: emailHtml(shop.name, review.author_name, review.text || '', review.rating, aiReply || '', replyUrl),

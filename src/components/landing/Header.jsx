@@ -47,7 +47,7 @@ const Header = () => {
           <div style={{ background: '#ffffff', color: '#000', padding: '6px', borderRadius: '50%' }}>
             <Sparkles size={18} fill="currentColor" />
           </div>
-          Star.Flow
+          StarScaleHub
         </div>
 
         <div className="nav-links" style={{ display: 'flex', gap: '28px', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)' }}>

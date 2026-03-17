@@ -87,7 +87,7 @@ const Pricing = () => {
                 className="gradient-btn"
                 style={{ width: '100%', padding: '16px', fontSize: '1rem', borderRadius: '14px' }}
               >
-                Get started with Starflow today →
+                Get started with StarScaleHub today →
               </button>
 
               <div style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.78rem', marginTop: '14px' }}>

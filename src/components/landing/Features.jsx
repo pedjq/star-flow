@@ -17,7 +17,7 @@ const STEPS = [
     number: '02',
     label: 'SMART AUTOMATION',
     title: 'Draft professional responses in seconds.',
-    desc: 'Star.Flow automatically syncs your newest Google reviews and generates personalised, brand-aligned replies. No more staring at a blank box — just high-quality drafts waiting for your approval.',
+    desc: 'StarScaleHub automatically syncs your newest Google reviews and generates personalised, brand-aligned replies. No more staring at a blank box — just high-quality drafts waiting for your approval.',
     icon: Sparkles,
     numColor: '#ffffff',
     bg: '#111218',
@@ -197,7 +197,7 @@ const ReviewAnimation = () => {
             <div key={i} style={{ width: '7px', height: '7px', borderRadius: '50%', background: bg }} />
           ))}
           <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.25)', marginLeft: '8px', fontWeight: 500 }}>
-            Star.Flow · Review Responses
+            StarScaleHub · Review Responses
           </span>
         </div>
 
@@ -292,7 +292,7 @@ const Features = () => {
             <span className="text-accent">three simple steps</span>
           </h2>
           <p style={{ fontSize: '1.0625rem', color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto' }}>
-            Star Flow handles everything between a customer scan and a published Google reply — automatically.
+            StarScaleHub handles everything between a customer scan and a published Google reply — automatically.
           </p>
         </div>
 

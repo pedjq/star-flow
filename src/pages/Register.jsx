@@ -61,7 +61,7 @@ const Register = () => {
         <div style={{ background: '#ffffff', color: '#000', padding: '6px', borderRadius: '50%' }}>
           <Sparkles size={20} fill="currentColor" />
         </div>
-        Star.Flow
+        StarScaleHub
       </motion.div>
 
       {success ? (

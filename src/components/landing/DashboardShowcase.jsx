@@ -199,7 +199,7 @@ const QRPanel = () => (
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>Triple S Barbers</div>
         <div style={{ fontSize: '0.56rem', color: 'rgba(255,255,255,0.38)', marginBottom: '7px' }}>Scan to rate your experience</div>
-        <div style={{ fontSize: '0.54rem', color: '#9b2df2', fontFamily: 'monospace' }}>starflow.app/rate/a1b2</div>
+        <div style={{ fontSize: '0.54rem', color: '#9b2df2', fontFamily: 'monospace' }}>starscalehub.com/rate/a1b2</div>
       </div>
     </div>
 
@@ -342,7 +342,7 @@ const DashboardShowcase = () => {
               ))}
             </div>
             <div style={{ flex: 1, background: 'rgba(255,255,255,0.04)', borderRadius: '6px', padding: '4px 10px', fontSize: '0.65rem', color: 'rgba(255,255,255,0.2)', textAlign: 'center', maxWidth: '240px', margin: '0 auto' }}>
-              app.starflow.io/dashboard
+              app.starscalehub.com/dashboard
             </div>
           </div>
 
@@ -354,7 +354,7 @@ const DashboardShowcase = () => {
                 <div style={{ background: 'linear-gradient(135deg, #9b2df2, #2b58ff)', color: '#fff', padding: '4px', borderRadius: '50%' }}>
                   <Sparkles size={11} fill="currentColor" />
                 </div>
-                <span>Star.<span style={{ background: 'linear-gradient(90deg, #2b58ff, #9b2df2, #ff2d55)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Flow</span></span>
+                <span>StarScale<span style={{ background: 'linear-gradient(90deg, #2b58ff, #9b2df2, #ff2d55)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Hub</span></span>
               </div>
               <nav style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                 {NAV.map((item, i) => {

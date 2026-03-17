@@ -100,7 +100,7 @@ const Comparison = () => {
               color: '#c084fc',
               display: 'flex', alignItems: 'center', gap: '7px',
             }}>
-              ★ Star.Flow
+              ★ StarScaleHub
             </div>
           </div>
 
@@ -130,7 +130,7 @@ const Comparison = () => {
                 <span style={{ fontSize: '0.825rem', color: 'rgba(255,255,255,0.32)', lineHeight: 1.5 }}>{row.free}</span>
               </div>
 
-              {/* Star.Flow column */}
+              {/* StarScaleHub column */}
               <div style={{ padding: '16px 24px', borderLeft: '1px solid rgba(155,45,242,0.15)', background: 'rgba(155,45,242,0.025)', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                 <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'rgba(91,231,139,0.1)', border: '1px solid rgba(91,231,139,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                   <Check size={10} color="#5be78b" strokeWidth={2.5} />

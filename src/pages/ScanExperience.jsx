@@ -327,7 +327,7 @@ const ScanExperience = () => {
 
         {/* Powered By Footer */}
         <div style={{ textAlign: 'center', marginTop: 'auto', padding: '24px', opacity: 0.5, fontSize: '0.75rem' }}>
-          Powered by <strong>Star Flow</strong>
+          Powered by <strong>StarScaleHub</strong>
         </div>
       </div>
     </div>

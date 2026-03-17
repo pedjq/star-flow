@@ -47,7 +47,7 @@ const HeroPreview = () => (
           maxWidth: '260px',
         }}>
           <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'rgba(91,231,139,0.7)', flexShrink: 0 }} />
-          <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace' }}>app.starflow.com/dashboard</span>
+          <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace' }}>app.starscalehub.com/dashboard</span>
         </div>
       </div>
 
@@ -250,7 +250,7 @@ const Hero = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           style={{ maxWidth: '620px', margin: '0 auto', marginBottom: '48px', fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}
         >
-          Stop chasing five-star reviews and start owning the conversation. Starflow intercepts negative feedback privately, automates AI responses, and builds your rating while you sleep.
+          Stop chasing five-star reviews and start owning the conversation. StarScaleHub intercepts negative feedback privately, automates AI responses, and builds your rating while you sleep.
         </motion.p>
 
         <motion.div

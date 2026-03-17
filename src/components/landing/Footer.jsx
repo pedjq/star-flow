@@ -18,7 +18,7 @@ const Footer = () => {
             <div style={{ background: '#ffffff', color: '#000', padding: '6px', borderRadius: '50%' }}>
               <Sparkles size={18} fill="currentColor" />
             </div>
-            Star.Flow
+            StarScaleHub
           </div>
 
           <div style={{ display: 'flex', gap: '24px', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
@@ -28,7 +28,7 @@ const Footer = () => {
           </div>
 
           <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.3)' }}>
-            © {new Date().getFullYear()} Star.Flow. All rights reserved.
+            © {new Date().getFullYear()} StarScaleHub. All rights reserved.
           </p>
         </div>
       </div>

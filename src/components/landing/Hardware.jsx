@@ -73,7 +73,7 @@ const StandIllustration = () => (
     }}>
       {/* Logo area */}
       <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: '-0.02em' }}>
-        ★ <span style={{ background: 'linear-gradient(90deg, #2b58ff, #9b2df2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>StarFlow</span>
+        ★ <span style={{ background: 'linear-gradient(90deg, #2b58ff, #9b2df2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>StarScaleHub</span>
       </div>
 
       {/* QR code (simplified dots grid) */}
