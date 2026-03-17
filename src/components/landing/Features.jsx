@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Sparkles, Send, QrCode } from 'lucide-react';
 
 const STEPS = [
@@ -241,42 +241,41 @@ const ReviewAnimation = () => {
           )}
         </div>
 
-        <AnimatePresence>
-          {showDraft && (
-            <motion.div
-              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-              animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px', overflow: 'hidden' }}
-            >
-              <div style={{ fontSize: '0.58rem', fontWeight: 700, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>AI Draft Reply</div>
-              <div style={{ padding: '10px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.6, minHeight: '60px' }}>
-                {typedText}
-                {phase === 3 && typedText.length < AI_RESPONSE.length && (
-                  <motion.span animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.5 }}
-                    style={{ display: 'inline-block', width: '1.5px', height: '10px', background: '#9b2df2', verticalAlign: 'text-bottom', marginLeft: '1px' }}
-                  />
-                )}
-              </div>
+        <div style={{
+          borderTop: '1px solid rgba(255,255,255,0.05)',
+          paddingTop: '12px',
+          marginTop: '12px',
+          opacity: showDraft ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+          pointerEvents: showDraft ? 'auto' : 'none',
+          minHeight: '110px',
+        }}>
+          <div style={{ fontSize: '0.58rem', fontWeight: 700, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>AI Draft Reply</div>
+          <div style={{ padding: '10px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.6, minHeight: '60px' }}>
+            {typedText}
+            {phase === 3 && typedText.length < AI_RESPONSE.length && (
+              <motion.span animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.5 }}
+                style={{ display: 'inline-block', width: '1.5px', height: '10px', background: '#9b2df2', verticalAlign: 'text-bottom', marginLeft: '1px' }}
+              />
+            )}
+          </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '9px', gap: '7px' }}>
-                <div style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.3)', borderRadius: '6px', padding: '4px 10px', fontSize: '0.63rem', fontFamily: 'inherit' }}>Copy</div>
-                {!isSent && (
-                  <motion.button
-                    animate={phase === 4 ? {
-                      scale: [1, 0.9, 1.05, 1],
-                      boxShadow: ['0 0 0px rgba(43,88,255,0)', '0 0 0px rgba(43,88,255,0)', '0 0 18px rgba(43,88,255,0.7)', '0 0 6px rgba(43,88,255,0.2)'],
-                    } : {}}
-                    transition={{ duration: 0.5 }}
-                    style={{ background: 'linear-gradient(135deg, #2b58ff, #9b2df2)', border: 'none', color: '#fff', padding: '5px 12px', borderRadius: '100px', fontSize: '0.675rem', fontWeight: 600, cursor: 'default', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'inherit' }}
-                  >
-                    <Send size={10} /> Mark as Sent
-                  </motion.button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '9px', gap: '7px' }}>
+            <div style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.3)', borderRadius: '6px', padding: '4px 10px', fontSize: '0.63rem', fontFamily: 'inherit' }}>Copy</div>
+            {!isSent && (
+              <motion.button
+                animate={phase === 4 ? {
+                  scale: [1, 0.9, 1.05, 1],
+                  boxShadow: ['0 0 0px rgba(43,88,255,0)', '0 0 0px rgba(43,88,255,0)', '0 0 18px rgba(43,88,255,0.7)', '0 0 6px rgba(43,88,255,0.2)'],
+                } : {}}
+                transition={{ duration: 0.5 }}
+                style={{ background: 'linear-gradient(135deg, #2b58ff, #9b2df2)', border: 'none', color: '#fff', padding: '5px 12px', borderRadius: '100px', fontSize: '0.675rem', fontWeight: 600, cursor: 'default', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'inherit' }}
+              >
+                <Send size={10} /> Mark as Sent
+              </motion.button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
