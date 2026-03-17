@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ReplyRedirect from './pages/ReplyRedirect';
 
 const NoiseOverlay = () => (
   <svg 
@@ -31,6 +32,7 @@ function App() {
         <Route path="/rate/:shopId" element={<ScanExperience />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/reply/:reviewId" element={<ReplyRedirect />} />
         <Route path="/dashboard/*" element={
           <ProtectedRoute>
             <DashboardLayout />
