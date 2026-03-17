@@ -287,7 +287,6 @@ const Features = () => {
       <div className="container">
         {/* Heading */}
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <span className="pill-badge gradient" style={{ marginBottom: '24px', display: 'inline-flex' }}>How it works</span>
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 600, marginBottom: '20px', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
             From scan to 5 stars —<br />
             <span className="text-accent">three simple steps</span>

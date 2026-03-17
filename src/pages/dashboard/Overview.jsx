@@ -254,9 +254,9 @@ const Overview = () => {
           <h1 style={{ fontSize: '2rem', marginBottom: '4px', fontWeight: 700 }}>Dashboard Overview</h1>
           <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Welcome back to your central reputation hub.</p>
         </div>
-        <button className="stakent-btn primary" onClick={() => setFetchTrigger(t => t + 1)} disabled={metricsLoading}>
+        <button className="stakent-btn primary" onClick={() => setFetchTrigger(t => t + 1)} disabled={metricsLoading} style={{ flexShrink: 0 }}>
           <RefreshCw size={15} style={{ animation: metricsLoading ? 'spin 1s linear infinite' : 'none' }} />
-          {metricsLoading ? 'Refreshing...' : 'Refresh Data'}
+          <span className="hide-on-mobile">{metricsLoading ? 'Refreshing...' : 'Refresh Data'}</span>
         </button>
       </div>
 

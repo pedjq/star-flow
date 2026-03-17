@@ -1,36 +1,39 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { TrendingUp, ShieldCheck, Zap } from 'lucide-react';
 
+// Direct DOM updates — no React re-renders per frame, silky smooth on mobile
 const AnimatedNumber = ({ value, inView }) => {
-  const [display, setDisplay] = useState('');
+  const ref = useRef(null);
 
   useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
     const numeric = parseFloat(value);
     const suffix = value.replace(/[0-9.]/g, '');
 
     if (!inView) {
-      setDisplay('0' + suffix);
+      el.textContent = '0' + suffix;
       return;
     }
 
-    const duration = 1400;
-    const startTime = Date.now();
+    const duration = 900;
+    const start = performance.now();
+    let raf;
 
-    const tick = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(eased * numeric);
-      setDisplay(current + suffix);
-      if (progress < 1) requestAnimationFrame(tick);
-      else setDisplay(value);
+    const tick = (now) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(eased * numeric) + suffix;
+      if (t < 1) { raf = requestAnimationFrame(tick); }
+      else { el.textContent = value; }
     };
 
-    requestAnimationFrame(tick);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [inView, value]);
 
-  return <>{display || value}</>;
+  return <span ref={ref}>{value}</span>;
 };
 
 const GridPattern = ({ id, color, opacity }) => (

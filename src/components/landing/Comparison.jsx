@@ -55,7 +55,6 @@ const Comparison = () => {
           transition={{ duration: 0.6 }}
           style={{ textAlign: 'center', marginBottom: '56px' }}
         >
-          <span className="pill-badge gradient" style={{ marginBottom: '20px', display: 'inline-flex' }}>Why Star.Flow</span>
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.15, marginBottom: '16px' }}>
             Don't just get scanned.<br />
             <span className="text-accent">Get managed.</span>

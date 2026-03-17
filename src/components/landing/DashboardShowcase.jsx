@@ -265,7 +265,6 @@ const DashboardShowcase = () => {
           transition={{ duration: 0.6 }}
           style={{ textAlign: 'center', marginBottom: '56px' }}
         >
-          <span className="pill-badge gradient" style={{ marginBottom: '20px', display: 'inline-flex' }}>Central Hub</span>
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '16px' }}>
             Your entire reputation<br />
             <span className="text-accent">in one central hub.</span>

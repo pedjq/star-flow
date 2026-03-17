@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Star, MessageSquare, Play } from 'lucide-react';
+import { Star, Shield, Play } from 'lucide-react';
 
 const FloatingGadget = ({ children, style, delay = 0, duration = 4, yOffset = -20 }) => (
   <motion.div
@@ -116,37 +116,46 @@ const Hero = () => {
 
       <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '400px', background: 'radial-gradient(ellipse at top, rgba(255,255,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-      <FloatingGadget style={{ top: '15%', left: '10%', transform: 'rotate(-5deg)' }} delay={0} duration={5} yOffset={-15}>
-        <div className="glass-panel" style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)' }}>
-          <div style={{ display: 'flex', gap: '4px' }}>
-            {[1,2,3,4,5].map(i => <Star key={i} size={14} fill="#fff" color="#fff" />)}
+      {/* Left card — reviews gained metric with mini sparkline */}
+      <FloatingGadget style={{ top: '15%', left: '7%', transform: 'rotate(-3deg)' }} delay={0} duration={5} yOffset={-15}>
+        <div className="glass-panel" style={{ padding: '14px 18px', minWidth: '175px', boxShadow: '0 14px 40px rgba(0,0,0,0.45)', border: '1px solid rgba(255,255,255,0.12)' }}>
+          <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.38)', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: '10px' }}>Last 30 days</div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '14px' }}>
+            <div>
+              <div style={{ fontSize: '1.875rem', fontWeight: 700, lineHeight: 1, color: '#fff' }}>+42</div>
+              <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)', marginTop: '5px' }}>5-star reviews</div>
+            </div>
+            <div style={{ display: 'flex', gap: '3px', alignItems: 'flex-end', paddingBottom: '2px' }}>
+              {[4, 5, 6, 7, 8, 9, 10].map((h, i) => (
+                <div key={i} style={{ width: '4px', height: `${h * 2}px`, borderRadius: '2px', background: i === 6 ? '#9b2df2' : `rgba(155,45,242,${0.2 + i * 0.1})` }} />
+              ))}
+            </div>
           </div>
-          <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>+42</span>
+          <div style={{ display: 'flex', gap: '2px', marginTop: '9px' }}>
+            {[1,2,3,4,5].map(i => <Star key={i} size={11} fill="#f4a017" color="#f4a017" />)}
+          </div>
         </div>
       </FloatingGadget>
 
-      <FloatingGadget style={{ top: '35%', right: '12%', transform: 'rotate(5deg)' }} delay={1.5} duration={6} yOffset={-20}>
-        <div className="glass-panel" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #9b2df2, #2b58ff)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <MessageSquare size={16} color="#fff" />
+      {/* Right card — negative feedback intercepted */}
+      <FloatingGadget style={{ top: '30%', right: '7%', transform: 'rotate(4deg)' }} delay={1.5} duration={6} yOffset={-20}>
+        <div className="glass-panel" style={{ padding: '14px 18px', minWidth: '215px', boxShadow: '0 14px 40px rgba(0,0,0,0.45)', border: '1px solid rgba(255,255,255,0.12)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'linear-gradient(135deg, #9b2df2, #2b58ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Shield size={13} color="#fff" />
+            </div>
+            <div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#fff' }}>1-Star Blocked</div>
+              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.38)' }}>Kept private · not on Google</div>
+            </div>
           </div>
-          <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Feedback intercepted</div>
-            <div style={{ fontSize: '1rem', fontWeight: 600 }}>1-Star Saved</div>
+          <div style={{ background: 'rgba(255,45,85,0.06)', border: '1px solid rgba(255,45,85,0.18)', borderRadius: '8px', padding: '8px 11px', fontSize: '0.7rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.45, fontStyle: 'italic' }}>
+            "Waited 20 mins, order was wrong..."
           </div>
         </div>
       </FloatingGadget>
 
       <div className="container" style={{ position: 'relative', zIndex: 10, width: '100%' }}>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          style={{ display: 'inline-flex', marginBottom: '32px' }}
-        >
-          <span className="pill-badge gradient" style={{ padding: '6px 20px', letterSpacing: '0.05em' }}>Reputation on Autopilot</span>
-        </motion.div>
 
         <motion.h1
           className="text-gradient"

@@ -120,16 +120,21 @@ const QRManagement = () => {
   const [font, setFont] = useState(DEFAULTS.font);
   const [logo, setLogo] = useState(null);
   const [downloading, setDownloading] = useState(false);
+  const [fontVersion, setFontVersion] = useState(0);
 
   useEffect(() => {
     if (font === 'Space Grotesk') return;
     const id = `gf-${font.replace(/\s/g, '-')}`;
+    const bump = () => document.fonts.ready.then(() => setFontVersion(v => v + 1));
     if (!document.getElementById(id)) {
       const link = document.createElement('link');
       link.id = id; link.rel = 'stylesheet';
       const w = font === 'Bebas Neue' ? '' : ':wght@400;600;700';
       link.href = `https://fonts.googleapis.com/css2?family=${font.replace(/\s/g, '+')}${w}&display=swap`;
+      link.onload = bump;
       document.head.appendChild(link);
+    } else {
+      bump();
     }
   }, [font]);
 
@@ -219,7 +224,7 @@ const QRManagement = () => {
         {/* Left — Preview */}
         <div className="stakent-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
           <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', letterSpacing: '0.09em', alignSelf: 'flex-start' }}>Live Preview</div>
-          <div style={{ padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.04)', overflow: 'hidden' }}>
+          <div key={fontVersion} style={{ padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.04)', overflow: 'hidden' }}>
             <PrintCard ref={cardRef} layout={layout} bgColor={bgColor} accentColor={accentColor} mainLabel={mainLabel} subLabel={subLabel} logo={logo} qrUrl={qrUrl} shopName={shop?.name} font={font} />
           </div>
           <button onClick={handleDownload} disabled={downloading} className="stakent-btn primary" style={{ width: '100%', padding: '14px', fontSize: '0.9375rem', opacity: downloading ? 0.7 : 1 }}>
