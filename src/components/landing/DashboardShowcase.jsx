@@ -348,9 +348,9 @@ const DashboardShowcase = () => {
           </div>
 
           {/* Dashboard body */}
-          <div style={{ display: 'flex', height: '420px' }}>
+          <div className="showcase-body" style={{ display: 'flex', height: '420px' }}>
             {/* Sidebar */}
-            <div style={{ width: '148px', flexShrink: 0, background: '#13141a', borderRight: '1px solid rgba(255,255,255,0.04)', padding: '16px 12px', display: 'flex', flexDirection: 'column' }}>
+            <div className="showcase-sidebar" style={{ width: '148px', flexShrink: 0, background: '#13141a', borderRight: '1px solid rgba(255,255,255,0.04)', padding: '16px 12px', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, fontSize: '0.875rem', marginBottom: '24px', paddingLeft: '4px', letterSpacing: '-0.02em' }}>
                 <div style={{ background: 'linear-gradient(135deg, #9b2df2, #2b58ff)', color: '#fff', padding: '4px', borderRadius: '50%' }}>
                   <Sparkles size={11} fill="currentColor" />

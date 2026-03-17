@@ -62,12 +62,12 @@ const StatCard = ({ delay, number, label, isLarge, icon: Icon, numColor, bg, bor
         background: bg,
         border: `1px solid ${borderColor}`,
         borderRadius: '28px',
-        padding: isLarge ? '48px' : '40px',
+        padding: isLarge ? 'clamp(24px, 4vw, 48px)' : 'clamp(20px, 3.5vw, 40px)',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
         overflow: 'hidden',
-        minHeight: isLarge ? '420px' : '380px',
+        minHeight: isLarge ? 'clamp(240px, 35vw, 420px)' : 'clamp(200px, 30vw, 380px)',
         boxShadow: isLarge
           ? '0 20px 80px rgba(155, 45, 242, 0.2)'
           : '0 20px 40px rgba(0,0,0,0.25)',
@@ -139,14 +139,14 @@ const StatCard = ({ delay, number, label, isLarge, icon: Icon, numColor, bg, bor
 
 const Stats = () => {
   return (
-    <section id="proof" style={{ padding: '160px 0', position: 'relative' }}>
+    <section id="proof" style={{ padding: 'clamp(72px, 12vw, 160px) 0', position: 'relative' }}>
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          style={{ textAlign: 'center', marginBottom: '80px' }}
+          style={{ textAlign: 'center', marginBottom: 'clamp(40px, 6vw, 80px)' }}
         >
           <h2 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: 700, letterSpacing: '-0.03em' }}>
             Real results,<br />

@@ -4,6 +4,7 @@ import { Star, MessageSquare, Play } from 'lucide-react';
 
 const FloatingGadget = ({ children, style, delay = 0, duration = 4, yOffset = -20 }) => (
   <motion.div
+    className="hero-float"
     initial={{ y: 0 }}
     animate={{ y: [0, yOffset, 0] }}
     transition={{ repeat: Infinity, duration, delay, ease: 'easeInOut' }}
@@ -22,73 +23,87 @@ const AnimatedGraph = () => {
   ];
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '350px', marginTop: '80px' }}>
-      <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <defs>
-          <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#2b58ff" />
-            <stop offset="50%" stopColor="#9b2df2" />
-            <stop offset="100%" stopColor="#ff2d55" />
-          </linearGradient>
-        </defs>
-        <motion.path
-          d={`M ${points[0].x} ${points[0].y}
-              C 20 80, 25 76, ${points[1].x} ${points[1].y}
-              C 45 72, 55 55, ${points[2].x} ${points[2].y}
-              C 75 35, 82 15, ${points[3].x} ${points[3].y}`}
-          fill="none"
-          stroke="url(#lineGrad)"
-          strokeWidth="0.8"
-          strokeLinecap="round"
-          filter="url(#glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
-        />
+    <div>
+      {/* SVG chart */}
+      <div className="hero-graph-wrap">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <defs>
+            <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#2b58ff" />
+              <stop offset="50%" stopColor="#9b2df2" />
+              <stop offset="100%" stopColor="#ff2d55" />
+            </linearGradient>
+          </defs>
+          <motion.path
+            d={`M ${points[0].x} ${points[0].y}
+                C 20 80, 25 76, ${points[1].x} ${points[1].y}
+                C 45 72, 55 55, ${points[2].x} ${points[2].y}
+                C 75 35, 82 15, ${points[3].x} ${points[3].y}`}
+            fill="none"
+            stroke="url(#lineGrad)"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            filter="url(#glow)"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
+          />
+          {points.map((p, i) => (
+            <g key={i}>
+              <motion.line
+                x1={p.x} y1={p.y} x2={p.x} y2="100"
+                className="graph-line-vertical"
+                strokeWidth="0.3"
+                initial={{ opacity: 0, y2: p.y }}
+                animate={{ opacity: 1, y2: 100 }}
+                transition={{ duration: 1, delay: 1 + (i * 0.3) }}
+              />
+              <motion.circle
+                cx={p.x} cy={p.y} r="1.5"
+                fill={i === 0 ? '#2b58ff' : i === 1 ? '#6c43fa' : i === 2 ? '#ce2df7' : '#ff2d55'}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, delay: 1.5 + (i * 0.3) }}
+              />
+            </g>
+          ))}
+        </svg>
+
+        {/* Desktop labels — absolutely positioned below each graph point */}
         {points.map((p, i) => (
-          <g key={i}>
-            <motion.line
-              x1={p.x} y1={p.y} x2={p.x} y2="100"
-              className="graph-line-vertical"
-              strokeWidth="0.3"
-              initial={{ opacity: 0, y2: p.y }}
-              animate={{ opacity: 1, y2: 100 }}
-              transition={{ duration: 1, delay: 1 + (i * 0.3) }}
-            />
-            <motion.circle
-              cx={p.x} cy={p.y} r="1.5"
-              fill={i === 0 ? '#2b58ff' : i === 1 ? '#6c43fa' : i === 2 ? '#ce2df7' : '#ff2d55'}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 200, delay: 1.5 + (i * 0.3) }}
-            />
-          </g>
+          <motion.div
+            key={i}
+            className="hero-graph-label"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 2 + (i * 0.2) }}
+            style={{ left: `${p.x}%`, top: '100%', transform: 'translateX(-50%)' }}
+          >
+            <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '6px', color: '#fff' }}>{p.label}</div>
+            <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{p.desc}</div>
+          </motion.div>
         ))}
-      </svg>
-      {points.map((p, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 2 + (i * 0.2) }}
-          style={{
-            position: 'absolute',
-            left: `${p.x}%`,
-            top: '100%',
-            transform: 'translateX(-50%)',
-            textAlign: 'center',
-            width: '160px',
-            marginTop: '24px',
-          }}
-        >
-          <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '6px', color: '#fff' }}>{p.label}</div>
-          <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{p.desc}</div>
-        </motion.div>
-      ))}
+      </div>
+
+      {/* Mobile labels — 2×2 grid, shown only on small screens */}
+      <div className="hero-graph-mobile-grid">
+        {points.map((p, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 1.8 + i * 0.15 }}
+            style={{ textAlign: 'center' }}
+          >
+            <div style={{ fontWeight: 600, fontSize: '0.8rem', color: '#fff', marginBottom: '4px' }}>{p.label}</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{p.desc}</div>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -97,7 +112,7 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="section-padding" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', paddingTop: '160px', position: 'relative' }}>
+    <section className="section-padding" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', paddingTop: 'clamp(100px, 15vw, 160px)', position: 'relative' }}>
 
       <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '400px', background: 'radial-gradient(ellipse at top, rgba(255,255,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
 

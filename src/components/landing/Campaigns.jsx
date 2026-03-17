@@ -45,7 +45,7 @@ const Campaigns = () => {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section id="value" style={{ padding: '120px 0', position: 'relative' }}>
+    <section id="value" style={{ padding: 'clamp(64px, 10vw, 120px) 0', position: 'relative' }}>
       <div className="container">
 
         <motion.div
@@ -73,12 +73,12 @@ const Campaigns = () => {
               background: 'linear-gradient(160deg, #1c0508 0%, #0d0205 100%)',
               border: '1px solid rgba(255,45,85,0.18)',
               borderRadius: '28px',
-              padding: '48px 36px',
+              padding: 'clamp(28px, 4vw, 48px) clamp(20px, 3.5vw, 36px)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               textAlign: 'center',
-              gap: '32px',
+              gap: 'clamp(20px, 3vw, 32px)',
               position: 'relative',
               overflow: 'hidden',
             }}
@@ -120,12 +120,12 @@ const Campaigns = () => {
               background: 'linear-gradient(160deg, #0f0a1e 0%, #0a0714 100%)',
               border: '1px solid rgba(155,45,242,0.22)',
               borderRadius: '28px',
-              padding: '48px 36px',
+              padding: 'clamp(28px, 4vw, 48px) clamp(20px, 3.5vw, 36px)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               textAlign: 'center',
-              gap: '32px',
+              gap: 'clamp(20px, 3vw, 32px)',
               position: 'relative',
               overflow: 'hidden',
             }}

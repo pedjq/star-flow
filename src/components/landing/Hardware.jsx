@@ -113,7 +113,7 @@ const Hardware = () => {
   const navigate = useNavigate();
 
   return (
-    <section style={{ padding: '80px 0 120px', position: 'relative' }}>
+    <section style={{ padding: 'clamp(48px, 6vw, 80px) 0 clamp(64px, 8vw, 120px)', position: 'relative' }}>
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -124,7 +124,7 @@ const Hardware = () => {
             background: 'linear-gradient(145deg, #0d0d12 0%, #111218 100%)',
             border: '1px solid rgba(255,255,255,0.06)',
             borderRadius: '32px',
-            padding: '80px 40px',
+            padding: 'clamp(40px, 6vw, 80px) clamp(20px, 4vw, 40px)',
             textAlign: 'center',
             position: 'relative',
             overflow: 'hidden',

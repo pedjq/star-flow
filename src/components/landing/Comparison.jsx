@@ -45,7 +45,7 @@ const Comparison = () => {
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
   return (
-    <section id="compare" style={{ padding: '80px 0 0', position: 'relative' }}>
+    <section id="compare" style={{ padding: 'clamp(48px, 6vw, 80px) 0 0', position: 'relative' }}>
       <div className="container">
 
         <motion.div
@@ -65,8 +65,11 @@ const Comparison = () => {
           </p>
         </motion.div>
 
+        {/* Scrollable wrapper on mobile */}
+        <div className="comparison-scroll">
         <motion.div
           ref={ref}
+          className="comparison-inner"
           initial={{ opacity: 0, y: 28 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
@@ -138,6 +141,7 @@ const Comparison = () => {
             </motion.div>
           ))}
         </motion.div>
+        </div>{/* end comparison-scroll */}
 
       </div>
     </section>

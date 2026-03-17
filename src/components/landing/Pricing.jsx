@@ -16,7 +16,7 @@ const Pricing = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="pricing" style={{ padding: '120px 0', position: 'relative' }}>
+    <section id="pricing" style={{ padding: 'clamp(64px, 10vw, 120px) 0', position: 'relative' }}>
       <div className="container">
 
         <motion.div
@@ -46,7 +46,7 @@ const Pricing = () => {
               background: 'linear-gradient(145deg, #0f0a1e 0%, #0a0714 100%)',
               border: '1px solid rgba(155,45,242,0.3)',
               borderRadius: '28px',
-              padding: '48px',
+              padding: 'clamp(24px, 4vw, 48px)',
               position: 'relative',
               overflow: 'hidden',
               boxShadow: '0 20px 80px rgba(155,45,242,0.18)',

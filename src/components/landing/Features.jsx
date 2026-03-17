@@ -66,7 +66,7 @@ const StepCard = ({ step, index }) => {
         background: step.bg,
         border: `1px solid ${step.borderColor}`,
         borderRadius: '24px',
-        padding: '32px',
+        padding: 'clamp(20px, 3.5vw, 32px)',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
@@ -285,7 +285,7 @@ const ReviewAnimation = () => {
 
 const Features = () => {
   return (
-    <section id="works" style={{ padding: '120px 0', position: 'relative' }}>
+    <section id="works" style={{ padding: 'clamp(64px, 10vw, 120px) 0', position: 'relative' }}>
       <div className="container">
         {/* Heading */}
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
@@ -316,7 +316,7 @@ const Features = () => {
             background: 'rgba(255,255,255,0.01)',
             border: '1px solid rgba(255,255,255,0.05)',
             borderRadius: '24px',
-            padding: '40px 28px',
+            padding: 'clamp(24px, 4vw, 40px) clamp(16px, 3vw, 28px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

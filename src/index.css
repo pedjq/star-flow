@@ -256,6 +256,94 @@ p {
   stroke-dasharray: 4 4;
 }
 
+/* ═══ MOBILE-FIRST RESPONSIVE ═══════════════════════════════════ */
+
+/* Reduce expensive blur filters on mobile — major perf win */
+@media (max-width: 767px) {
+  .bg-glow {
+    filter: blur(50px);
+    opacity: 0.55;
+  }
+  .glass-panel {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .container {
+    padding: 0 16px;
+  }
+}
+
+/* Hide navbar links on small screens */
+@media (max-width: 620px) {
+  .nav-links {
+    display: none !important;
+  }
+}
+
+/* Hero: hide floating badge cards on mobile */
+@media (max-width: 767px) {
+  .hero-float {
+    display: none !important;
+  }
+}
+
+/* Hero graph: desktop = absolute-positioned labels, mobile = 2×2 grid */
+.hero-graph-wrap {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  margin-top: 80px;
+}
+.hero-graph-label {
+  position: absolute;
+  text-align: center;
+  width: 160px;
+  margin-top: 24px;
+}
+.hero-graph-mobile-grid {
+  display: none;
+}
+@media (max-width: 767px) {
+  .hero-graph-wrap {
+    height: 180px;
+    margin-top: 40px;
+  }
+  .hero-graph-label {
+    display: none;
+  }
+  .hero-graph-mobile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 12px;
+    margin-top: 20px;
+    padding-bottom: 8px;
+  }
+}
+
+/* Dashboard showcase: hide sidebar on mobile so content is full-width */
+@media (max-width: 767px) {
+  .showcase-sidebar {
+    display: none !important;
+  }
+  .showcase-body {
+    height: auto !important;
+    min-height: 360px;
+  }
+}
+
+/* Comparison table: horizontally scrollable on narrow screens */
+.comparison-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.comparison-inner {
+  min-width: 540px;
+}
+@media (min-width: 620px) {
+  .comparison-scroll { overflow-x: visible; }
+  .comparison-inner  { min-width: unset; }
+}
+
 /* How it works layout */
 .how-it-works-grid {
   grid-template-columns: 1fr;
