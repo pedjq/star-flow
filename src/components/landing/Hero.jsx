@@ -8,7 +8,7 @@ const FloatingGadget = ({ children, style, delay = 0, duration = 4, yOffset = -2
     initial={{ y: 0 }}
     animate={{ y: [0, yOffset, 0] }}
     transition={{ repeat: Infinity, duration, delay, ease: 'easeInOut' }}
-    style={{ ...style, position: 'absolute', zIndex: 15, pointerEvents: 'none' }}
+    style={{ ...style, position: 'absolute', zIndex: 15, pointerEvents: 'none', willChange: 'transform' }}
   >
     {children}
   </motion.div>
@@ -112,7 +112,7 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="section-padding" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', paddingTop: 'clamp(100px, 15vw, 160px)', position: 'relative' }}>
+    <section className="section-padding" style={{ minHeight: '100svh', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', paddingTop: 'clamp(100px, 15vw, 160px)', position: 'relative' }}>
 
       <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '400px', background: 'radial-gradient(ellipse at top, rgba(255,255,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
 

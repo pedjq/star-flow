@@ -61,7 +61,6 @@ const StepCard = ({ step, index }) => {
       initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
       style={{
         background: step.bg,
         border: `1px solid ${step.borderColor}`,

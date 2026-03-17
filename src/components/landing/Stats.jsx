@@ -57,7 +57,6 @@ const StatCard = ({ delay, number, label, isLarge, icon: Icon, numColor, bg, bor
       initial={{ opacity: 0, y: 50 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
-      whileHover={{ y: -6, transition: { duration: 0.2 } }}
       style={{
         background: bg,
         border: `1px solid ${borderColor}`,
