@@ -6,7 +6,7 @@ const FEATURES = [
   'Unlimited QR code scans',
   'Private feedback interception',
   'AI-generated review replies',
-  'Automated reply emails — just approve',
+  'Instant approval emails — reply in seconds',
   'Custom QR card designer',
   'Feedback analytics dashboard',
   'Google review monitoring (3-hour checks)',
@@ -57,7 +57,7 @@ const Pricing = () => {
 
             {/* Badge */}
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(155,45,242,0.12)', border: '1px solid rgba(155,45,242,0.3)', borderRadius: '100px', padding: '5px 14px', fontSize: '0.72rem', fontWeight: 700, color: '#c084fc', marginBottom: '28px' }}>
-              <Zap size={11} fill="currentColor" /> Google-Only MVP Suite
+              <Zap size={11} fill="currentColor" /> Founding Member Plan
             </div>
 
             {/* Price */}
