@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
 import { RefreshCw, Sparkles, Copy, Check, RotateCcw, Send, Settings, ChevronDown, ChevronUp } from 'lucide-react';
-import { FaGoogle, FaYelp, FaTripadvisor, FaFacebookF } from 'react-icons/fa';
+import { FaGoogle } from 'react-icons/fa';
 import { supabase } from '../../lib/supabaseClient';
 import { useShop } from '../../hooks/useShop';
 
 const PLATFORMS = [
-  { id: 'google',      label: 'Google',      idField: 'place_id',        Icon: FaGoogle,      color: '#4285F4' },
-  { id: 'yelp',        label: 'Yelp',        idField: 'yelp_url',        Icon: FaYelp,        color: '#FF1A1A' },
-  { id: 'tripadvisor', label: 'TripAdvisor', idField: 'tripadvisor_url', Icon: FaTripadvisor, color: '#34E0A1' },
-  { id: 'facebook',    label: 'Facebook',    idField: 'facebook_url',    Icon: FaFacebookF,   color: '#1877F2' },
+  { id: 'google', label: 'Google', idField: 'place_id', Icon: FaGoogle, color: '#4285F4' },
 ];
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -172,7 +169,6 @@ const Responses = () => {
   const isConfigured = !!shop?.[currentPlatformConfig?.idField];
   const reviews = reviewsByPlatform[activePlatform];
   const isLoading = loadingPlatform === activePlatform;
-  const configuredCount = PLATFORMS.filter(p => shop?.[p.idField]).length;
 
   return (
     <div>
@@ -415,20 +411,6 @@ const Responses = () => {
         )
       )}
 
-      {/* Connect more platforms banner */}
-      {configuredCount < PLATFORMS.length && (
-        <div style={{ marginTop: '40px', padding: '20px 24px', borderRadius: '16px', background: 'rgba(155,45,242,0.04)', border: '1px solid rgba(155,45,242,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
-          <div>
-            <div style={{ fontWeight: 600, marginBottom: '4px', fontSize: '0.9375rem' }}>Connect more platforms</div>
-            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-              Add Yelp, TripAdvisor, or Facebook in Settings to manage all your reviews in one place.
-            </div>
-          </div>
-          <a href="/dashboard/settings" className="stakent-btn primary" style={{ flexShrink: 0 }}>
-            Add Platforms
-          </a>
-        </div>
-      )}
     </div>
   );
 };

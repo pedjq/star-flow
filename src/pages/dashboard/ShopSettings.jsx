@@ -26,9 +26,6 @@ const ShopSettings = () => {
     googleMapsUrl: '',
     placeId: '',
     persona: '',
-    yelpUrl: '',
-    tripadvisorUrl: '',
-    facebookUrl: '',
   });
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -43,9 +40,6 @@ const ShopSettings = () => {
         googleMapsUrl: shop.google_maps_url ?? '',
         placeId: shop.place_id ?? '',
         persona: shop.persona ?? '',
-        yelpUrl: shop.yelp_url ?? '',
-        tripadvisorUrl: shop.tripadvisor_url ?? '',
-        facebookUrl: shop.facebook_url ?? '',
       });
     }
   }, [shop]);
@@ -68,9 +62,6 @@ const ShopSettings = () => {
         google_maps_url: formData.googleMapsUrl,
         place_id: formData.placeId,
         persona: formData.persona,
-        yelp_url: formData.yelpUrl || null,
-        tripadvisor_url: formData.tripadvisorUrl || null,
-        facebook_url: formData.facebookUrl || null,
       },
       { onConflict: 'user_id' }
     );
@@ -131,45 +122,6 @@ const ShopSettings = () => {
                   </a>
                 </div>
                 <input name="placeId" value={formData.placeId} onChange={handleChange} style={inputStyle} />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', borderBottom: '1px solid var(--glass-border)', paddingBottom: '16px' }}>More Review Platforms</h3>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '24px', marginTop: '0' }}>
-              Connect Yelp, TripAdvisor, and Facebook to pull reviews and generate AI replies from all your sources in one place.
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '24px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '8px' }}>Yelp Business URL</label>
-                <input
-                  name="yelpUrl"
-                  value={formData.yelpUrl}
-                  onChange={handleChange}
-                  placeholder="https://www.yelp.com/biz/your-business"
-                  style={inputStyle}
-                />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '8px' }}>TripAdvisor URL</label>
-                <input
-                  name="tripadvisorUrl"
-                  value={formData.tripadvisorUrl}
-                  onChange={handleChange}
-                  placeholder="https://www.tripadvisor.com/Restaurant_Review-..."
-                  style={inputStyle}
-                />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '8px' }}>Facebook Page URL</label>
-                <input
-                  name="facebookUrl"
-                  value={formData.facebookUrl}
-                  onChange={handleChange}
-                  placeholder="https://www.facebook.com/yourpage"
-                  style={inputStyle}
-                />
               </div>
             </div>
           </div>
