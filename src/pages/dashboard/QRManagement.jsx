@@ -78,8 +78,7 @@ const CustomQR = ({ value, size, fgColor, bgColor, dotStyle, showGoogleG }) => {
       if (dotStyle === 'dots') {
         dots.push(<circle key={`${col}-${row}`} cx={cx} cy={cy} r={mod * 0.43} fill={fgColor} />);
       } else if (dotStyle === 'rounded') {
-        const pad = mod * 0.1;
-        dots.push(<rect key={`${col}-${row}`} x={col * mod + pad} y={row * mod + pad} width={mod - pad * 2} height={mod - pad * 2} rx={mod * 0.3} fill={fgColor} />);
+        dots.push(<rect key={`${col}-${row}`} x={col * mod} y={row * mod} width={mod} height={mod} rx={mod * 0.22} fill={fgColor} />);
       } else {
         dots.push(<rect key={`${col}-${row}`} x={col * mod} y={row * mod} width={mod} height={mod} fill={fgColor} />);
       }
@@ -91,10 +90,7 @@ const CustomQR = ({ value, size, fgColor, bgColor, dotStyle, showGoogleG }) => {
       <rect width={size} height={size} fill={bgColor} />
       {dots}
       {showGoogleG && (
-        <>
-          <rect x={gOff - gPad / 2} y={gOff - gPad / 2} width={gSize + gPad} height={gSize + gPad} rx={mod} fill={bgColor} />
-          <image href={GOOGLE_G_URL} x={gOff} y={gOff} width={gSize} height={gSize} />
-        </>
+        <image href={GOOGLE_G_URL} x={gOff} y={gOff} width={gSize} height={gSize} />
       )}
     </svg>
   );
