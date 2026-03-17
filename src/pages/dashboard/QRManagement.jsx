@@ -147,6 +147,24 @@ const QRManagement = () => {
     setSubLabel(DEFAULTS.subLabel); setFont(DEFAULTS.font); setLogo(null);
   };
 
+  const handleDownloadQROnly = () => {
+    const svgEl = cardRef.current?.querySelector('svg');
+    if (!svgEl) return;
+    let svgStr = new XMLSerializer().serializeToString(svgEl);
+    // Force black-on-white for maximum scanner compatibility
+    svgStr = svgStr.split(accentColor.toLowerCase()).join('#000000')
+                   .split(accentColor.toUpperCase()).join('#000000')
+                   .split(bgColor.toLowerCase()).join('#ffffff')
+                   .split(bgColor.toUpperCase()).join('#ffffff');
+    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `StarFlow-QR.svg`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleDownload = async () => {
     if (!cardRef.current) return;
     setDownloading(true);
@@ -206,6 +224,9 @@ const QRManagement = () => {
           </div>
           <button onClick={handleDownload} disabled={downloading} className="stakent-btn primary" style={{ width: '100%', padding: '14px', fontSize: '0.9375rem', opacity: downloading ? 0.7 : 1 }}>
             <Download size={16} /> {downloading ? 'Generating...' : 'Download Print-Ready PNG'}
+          </button>
+          <button onClick={handleDownloadQROnly} className="stakent-btn" style={{ width: '100%', padding: '12px', fontSize: '0.9rem' }}>
+            <Download size={15} /> Download QR Only (SVG)
           </button>
           <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.22)', textAlign: 'center', margin: 0 }}>
             Exports at 6× resolution — print-ready at 300 DPI
