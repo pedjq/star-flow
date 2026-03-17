@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Star, Shield, Play } from 'lucide-react';
+import { Star, Shield, Sparkles, Play } from 'lucide-react';
 
 const FloatingGadget = ({ children, style, delay = 0, duration = 4, yOffset = -20 }) => (
   <motion.div
@@ -14,99 +14,97 @@ const FloatingGadget = ({ children, style, delay = 0, duration = 4, yOffset = -2
   </motion.div>
 );
 
-const AnimatedGraph = () => {
-  const points = [
-    { x: 10, y: 80, label: "Scan & Verify",  desc: "Customers scan your branded QR code at checkout." },
-    { x: 35, y: 75, label: "Intercept",       desc: "Negative feedback is captured privately before it hits Google." },
-    { x: 65, y: 45, label: "4 & 5★ → Google", desc: "Happy customers are routed straight to your Google listing." },
-    { x: 90, y: 15, label: "Auto Reply",       desc: "AI drafts and sends replies to your best reviews — automatically." },
-  ];
+const HeroPreview = () => (
+  <motion.div
+    className="hero-preview-grid"
+    initial={{ opacity: 0, y: 36 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.7, delay: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }}
+    style={{ marginTop: '64px' }}
+  >
+    {/* Card 1 — Intercepted negative review */}
+    <motion.div
+      className="glass-panel hero-preview-card"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.55 }}
+      style={{ padding: '20px', textAlign: 'left' }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '14px' }}>
+        <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'rgba(255,45,85,0.1)', border: '1px solid rgba(255,45,85,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Shield size={15} color="#ff6080" />
+        </div>
+        <div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#fff' }}>Intercepted</div>
+          <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.35)' }}>Kept private · not on Google</div>
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: '2px', marginBottom: '9px' }}>
+        {[1,2].map(i => <span key={i} style={{ color: '#ff2d55', fontSize: '12px' }}>★</span>)}
+        {[3,4,5].map(i => <span key={i} style={{ color: 'rgba(255,255,255,0.12)', fontSize: '12px' }}>★</span>)}
+      </div>
+      <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.55, fontStyle: 'italic' }}>
+        "Waited 20 minutes and my order was completely wrong..."
+      </div>
+      <div style={{ marginTop: '12px', fontSize: '0.65rem', background: 'rgba(255,45,85,0.07)', border: '1px solid rgba(255,45,85,0.2)', color: 'rgba(255,100,130,0.85)', padding: '4px 10px', borderRadius: '100px', display: 'inline-block' }}>
+        Not posted to Google
+      </div>
+    </motion.div>
 
-  return (
-    <div>
-      {/* SVG chart */}
-      <div className="hero-graph-wrap">
-        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <defs>
-            <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#2b58ff" />
-              <stop offset="50%" stopColor="#9b2df2" />
-              <stop offset="100%" stopColor="#ff2d55" />
-            </linearGradient>
-          </defs>
-          <motion.path
-            d={`M ${points[0].x} ${points[0].y}
-                C 20 80, 25 76, ${points[1].x} ${points[1].y}
-                C 45 72, 55 55, ${points[2].x} ${points[2].y}
-                C 75 35, 82 15, ${points[3].x} ${points[3].y}`}
-            fill="none"
-            stroke="url(#lineGrad)"
-            strokeWidth="0.8"
-            strokeLinecap="round"
-            filter="url(#glow)"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
-          />
-          {points.map((p, i) => (
-            <g key={i}>
-              <motion.line
-                x1={p.x} y1={p.y} x2={p.x} y2="100"
-                className="graph-line-vertical"
-                strokeWidth="0.3"
-                initial={{ opacity: 0, y2: p.y }}
-                animate={{ opacity: 1, y2: 100 }}
-                transition={{ duration: 1, delay: 1 + (i * 0.3) }}
-              />
-              <motion.circle
-                cx={p.x} cy={p.y} r="1.5"
-                fill={i === 0 ? '#2b58ff' : i === 1 ? '#6c43fa' : i === 2 ? '#ce2df7' : '#ff2d55'}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 200, delay: 1.5 + (i * 0.3) }}
-              />
-            </g>
-          ))}
-        </svg>
-
-        {/* Desktop labels — absolutely positioned below each graph point */}
-        {points.map((p, i) => (
-          <motion.div
-            key={i}
-            className="hero-graph-label"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 2 + (i * 0.2) }}
-            style={{ left: `${p.x}%`, top: '100%', transform: 'translateX(-50%)' }}
-          >
-            <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '6px', color: '#fff' }}>{p.label}</div>
-            <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{p.desc}</div>
-          </motion.div>
+    {/* Card 2 — Reviews gained (center, slightly elevated) */}
+    <motion.div
+      className="glass-panel hero-preview-card hero-preview-card--center"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.65 }}
+      style={{ padding: '20px', textAlign: 'left', background: 'rgba(155,45,242,0.04)', border: '1px solid rgba(155,45,242,0.18)' }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '14px' }}>
+        <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'rgba(155,45,242,0.12)', border: '1px solid rgba(155,45,242,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Star size={15} color="#c084fc" fill="#c084fc" />
+        </div>
+        <div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#fff' }}>Google Reviews</div>
+          <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.35)' }}>This month</div>
+        </div>
+      </div>
+      <div style={{ fontSize: '2.5rem', fontWeight: 700, lineHeight: 1, color: '#fff', marginBottom: '6px' }}>+42</div>
+      <div style={{ display: 'flex', gap: '2px', marginBottom: '12px' }}>
+        {[1,2,3,4,5].map(i => <span key={i} style={{ color: '#f4a017', fontSize: '13px' }}>★</span>)}
+      </div>
+      <div style={{ display: 'flex', gap: '3px', alignItems: 'flex-end' }}>
+        {[3,4,5,6,7,8,10,12].map((h, i) => (
+          <div key={i} style={{ width: '100%', maxWidth: '14px', height: `${h * 2.8}px`, borderRadius: '3px', background: i === 7 ? '#9b2df2' : `rgba(155,45,242,${0.2 + i * 0.09})` }} />
         ))}
       </div>
+    </motion.div>
 
-      {/* Mobile labels — 2×2 grid, shown only on small screens */}
-      <div className="hero-graph-mobile-grid">
-        {points.map((p, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 1.8 + i * 0.15 }}
-            style={{ textAlign: 'center' }}
-          >
-            <div style={{ fontWeight: 600, fontSize: '0.8rem', color: '#fff', marginBottom: '4px' }}>{p.label}</div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{p.desc}</div>
-          </motion.div>
-        ))}
+    {/* Card 3 — AI reply published */}
+    <motion.div
+      className="glass-panel hero-preview-card"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.75 }}
+      style={{ padding: '20px', textAlign: 'left' }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '14px' }}>
+        <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'rgba(43,88,255,0.1)', border: '1px solid rgba(43,88,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Sparkles size={15} color="#6080ff" />
+        </div>
+        <div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#fff' }}>AI Reply Sent</div>
+          <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.35)' }}>Auto-published</div>
+        </div>
       </div>
-    </div>
-  );
-};
+      <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: '12px' }}>
+        "Thank you Sarah! We're thrilled you loved the experience — can't wait to welcome you back soon! ☕"
+      </div>
+      <div style={{ fontSize: '0.65rem', background: 'rgba(91,231,139,0.07)', border: '1px solid rgba(91,231,139,0.2)', color: 'rgba(91,231,139,0.85)', padding: '4px 10px', borderRadius: '100px', display: 'inline-block' }}>
+        ✓ Posted on Google
+      </div>
+    </motion.div>
+  </motion.div>
+);
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -116,7 +114,7 @@ const Hero = () => {
 
       <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '400px', background: 'radial-gradient(ellipse at top, rgba(255,255,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-      {/* Left card — reviews gained metric with mini sparkline */}
+      {/* Left card */}
       <FloatingGadget style={{ top: '15%', left: '7%', transform: 'rotate(-3deg)' }} delay={0} duration={5} yOffset={-15}>
         <div className="glass-panel" style={{ padding: '14px 18px', minWidth: '175px', boxShadow: '0 14px 40px rgba(0,0,0,0.45)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.38)', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: '10px' }}>Last 30 days</div>
@@ -137,7 +135,7 @@ const Hero = () => {
         </div>
       </FloatingGadget>
 
-      {/* Right card — negative feedback intercepted */}
+      {/* Right card */}
       <FloatingGadget style={{ top: '30%', right: '7%', transform: 'rotate(4deg)' }} delay={1.5} duration={6} yOffset={-20}>
         <div className="glass-panel" style={{ padding: '14px 18px', minWidth: '215px', boxShadow: '0 14px 40px rgba(0,0,0,0.45)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
@@ -198,7 +196,7 @@ const Hero = () => {
           </button>
         </motion.div>
 
-        <AnimatedGraph />
+        <HeroPreview />
 
       </div>
     </section>

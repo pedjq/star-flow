@@ -264,9 +264,10 @@ p {
     filter: blur(50px);
     opacity: 0.55;
   }
+  /* Remove backdrop-filter entirely on mobile — expensive GPU op */
   .glass-panel {
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
   .container {
     padding: 0 16px;
@@ -287,36 +288,36 @@ p {
   }
 }
 
-/* Hero graph: desktop = absolute-positioned labels, mobile = 2×2 grid */
-.hero-graph-wrap {
-  position: relative;
-  width: 100%;
-  height: 350px;
-  margin-top: 80px;
+/* Hero product preview cards */
+.hero-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  text-align: left;
+  padding-bottom: 48px;
 }
-.hero-graph-label {
-  position: absolute;
-  text-align: center;
-  width: 160px;
-  margin-top: 24px;
+.hero-preview-card {
+  border-radius: 18px;
 }
-.hero-graph-mobile-grid {
-  display: none;
+.hero-preview-card--center {
+  transform: translateY(-12px);
 }
 @media (max-width: 767px) {
-  .hero-graph-wrap {
-    height: 180px;
-    margin-top: 40px;
+  .hero-preview-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-bottom: 24px;
   }
-  .hero-graph-label {
-    display: none;
+  .hero-preview-card--center {
+    transform: none;
   }
-  .hero-graph-mobile-grid {
-    display: grid;
+}
+@media (min-width: 480px) and (max-width: 767px) {
+  .hero-preview-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 16px 12px;
-    margin-top: 20px;
-    padding-bottom: 8px;
+  }
+  .hero-preview-card:last-child {
+    grid-column: 1 / -1;
   }
 }
 
@@ -558,4 +559,14 @@ p {
 .stakent-btn.primary:hover {
   box-shadow: 0 0 15px rgba(155, 45, 242, 0.4);
   transform: translateY(-1px);
+}
+
+/* ── MOBILE SCROLL PERFORMANCE ──────────────────────────────────── */
+/* Skip layout/paint for off-screen sections while scrolling */
+@media (max-width: 767px) {
+  #proof,
+  #works {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 600px;
+  }
 }

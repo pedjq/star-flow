@@ -251,7 +251,7 @@ const ReviewAnimation = () => {
           minHeight: '110px',
         }}>
           <div style={{ fontSize: '0.58rem', fontWeight: 700, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>AI Draft Reply</div>
-          <div style={{ padding: '10px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.6, minHeight: '60px' }}>
+          <div style={{ padding: '10px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.6, height: '80px', overflow: 'hidden' }}>
             {typedText}
             {phase === 3 && typedText.length < AI_RESPONSE.length && (
               <motion.span animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.5 }}
