@@ -5,9 +5,9 @@ import { Sparkles, Send, QrCode } from 'lucide-react';
 const STEPS = [
   {
     number: '01',
-    label: 'SCAN & RATE',
-    title: 'Customers rate privately at checkout',
-    desc: 'A sleek QR code sends customers to a beautiful feedback screen. Happy ones go straight to Google — the rest stay private.',
+    label: 'SCAN & FILTER',
+    title: 'Intercept feedback at the source.',
+    desc: 'A sleek QR entry point directs customers to a beautiful feedback interface. We automatically route 5-star fans to Google while keeping negative experiences private and actionable for you.',
     icon: QrCode,
     numColor: '#c084fc',
     bg: 'linear-gradient(145deg, #0f0a1e 0%, #0a0714 100%)',
@@ -15,9 +15,9 @@ const STEPS = [
   },
   {
     number: '02',
-    label: 'AI DRAFTS',
-    title: 'AI writes the perfect reply instantly',
-    desc: 'Star Flow pulls your 5-star reviews and drafts personalised, on-brand responses in seconds. One click, ready to publish.',
+    label: 'SMART AUTOMATION',
+    title: 'Draft professional responses in seconds.',
+    desc: 'Star.Flow automatically syncs your newest Google reviews and generates personalised, brand-aligned replies. No more staring at a blank box — just high-quality drafts waiting for your approval.',
     icon: Sparkles,
     numColor: '#ffffff',
     bg: '#111218',
@@ -25,9 +25,9 @@ const STEPS = [
   },
   {
     number: '03',
-    label: 'YOU PUBLISH',
-    title: 'Copy, paste, watch your rating climb',
-    desc: 'Copy the AI draft with one click, paste it into Google, and watch your score inch toward the next milestone.',
+    label: 'SEAMLESS PUBLISHING',
+    title: 'One click, and your rating climbs.',
+    desc: 'Finalize the draft with a single click and push it live on Google. Every response signals to Google\'s algorithm that your business is active, helping you outrank competitors.',
     icon: Send,
     numColor: '#ffffff',
     bg: '#111218',
