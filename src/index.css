@@ -288,6 +288,18 @@ p {
   }
 }
 
+.qr-designer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media(min-width: 800px) {
+  .qr-designer-grid {
+    grid-template-columns: 1fr 1.3fr;
+    align-items: start;
+  }
+}
+
 /* Dashboard Specific UI (Stakent Reference) */
 .dashboard-grid {
   display: grid;
