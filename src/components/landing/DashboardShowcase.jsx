@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from 'recharts';
+import {
   MessageSquare, BarChart3, QrCode,
   Sparkles, LayoutDashboard, Settings, Send,
   TrendingUp, Shield, Star, Zap,
@@ -84,36 +87,69 @@ const ResponsesPanel = () => (
 );
 
 // ─── Panel: Feedback Insights ───────────────────────────────────────────────
+const insightsMockData = [
+  { date: 'Mar 11', positive: 3, negative: 1 },
+  { date: 'Mar 12', positive: 5, negative: 2 },
+  { date: 'Mar 13', positive: 4, negative: 1 },
+  { date: 'Mar 14', positive: 7, negative: 0 },
+  { date: 'Mar 15', positive: 6, negative: 2 },
+  { date: 'Mar 16', positive: 9, negative: 1 },
+  { date: 'Mar 17', positive: 8, negative: 0 },
+];
+
 const InsightsPanel = () => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>Overview</span>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
-      {[
-        { label: 'Total Scans',   value: '247',   Icon: QrCode,      color: '#9b2df2' },
-        { label: 'Reviews Gained', value: '89',   Icon: TrendingUp,  color: '#5be78b' },
-        { label: 'Intercepted',   value: '23',    Icon: Shield,      color: '#2b58ff' },
-        { label: 'Avg. Rating',   value: '4.7 ★', Icon: Star,        color: '#f4a017' },
-      ].map(({ label, value, Icon, color }, i) => (
-        <div key={i} style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '11px 13px' }}>
-          <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)', marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Icon size={9} color={color} /> {label}
-          </div>
-          <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#fff', letterSpacing: '-0.03em' }}>{value}</div>
-        </div>
-      ))}
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff' }}>7-Day Engagement</span>
+      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.58rem', color: 'rgba(255,255,255,0.4)' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#9b2df2', display: 'inline-block' }} /> 5-star
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.58rem', color: 'rgba(255,255,255,0.4)' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff2d55', display: 'inline-block' }} /> intercepted
+        </span>
+      </div>
     </div>
-    <div>
-      <div style={{ fontSize: '0.6rem', fontWeight: 700, color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '7px' }}>Recent Private Feedback</div>
+
+    {/* Area Chart */}
+    <div style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '12px 8px 4px' }}>
+      <ResponsiveContainer width="100%" height={140}>
+        <AreaChart data={insightsMockData} margin={{ top: 4, right: 8, left: -28, bottom: 0 }}>
+          <defs>
+            <linearGradient id="showcasePositive" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#9b2df2" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#9b2df2" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="showcaseNegative" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#ff2d55" stopOpacity={0.25} />
+              <stop offset="95%" stopColor="#ff2d55" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+          <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'rgba(255,255,255,0.28)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 9, fill: 'rgba(255,255,255,0.28)' }} axisLine={false} tickLine={false} allowDecimals={false} />
+          <Tooltip
+            contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', fontSize: '0.65rem', color: '#fff' }}
+            labelStyle={{ color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}
+          />
+          <Area type="monotone" dataKey="positive" name="5-star" stroke="#9b2df2" strokeWidth={1.5} fill="url(#showcasePositive)" dot={false} />
+          <Area type="monotone" dataKey="negative" name="intercepted" stroke="#ff2d55" strokeWidth={1.5} fill="url(#showcaseNegative)" dot={false} />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+
+    {/* Stat row */}
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '7px' }}>
       {[
-        { stars: 2, text: 'Wait time was a bit long during peak hours', time: '2 days ago' },
-        { stars: 3, text: 'Good food but the music was too loud', time: '4 days ago' },
-      ].map((fb, i) => (
-        <div key={i} style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 10px', marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-          <div>
-            <span style={{ color: '#f4a017', fontSize: '9px' }}>{'★'.repeat(fb.stars)}{'☆'.repeat(5 - fb.stars)}</span>
-            <p style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', margin: '2px 0 0', lineHeight: 1.45 }}>{fb.text}</p>
+        { label: 'Total Scans', value: '247', color: '#9b2df2', Icon: QrCode },
+        { label: 'Reviews +',  value: '89',  color: '#5be78b', Icon: TrendingUp },
+        { label: 'Avg. Rating', value: '4.7★', color: '#f4a017', Icon: Star },
+      ].map(({ label, value, color, Icon }, i) => (
+        <div key={i} style={{ background: '#0f1015', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '9px', padding: '9px 10px' }}>
+          <div style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.32)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+            <Icon size={8} color={color} /> {label}
           </div>
-          <span style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.22)', flexShrink: 0 }}>{fb.time}</span>
+          <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', letterSpacing: '-0.03em' }}>{value}</div>
         </div>
       ))}
     </div>
