@@ -37,7 +37,7 @@ const SectionTitle = ({ children }) => (
 
 const ShopSettings = () => {
   const { user } = useAuth();
-  const { shop, loading: shopLoading } = useShop();
+  const { shop, loading: shopLoading, refetch } = useShop();
 
   const [formData, setFormData] = useState({
     shopName: '',
@@ -87,6 +87,7 @@ const ShopSettings = () => {
     if (error) {
       setSaveError(error.message);
     } else {
+      await refetch();
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     }
